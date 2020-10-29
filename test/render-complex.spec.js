@@ -57,6 +57,7 @@ describe('renderToString()', () => {
 
     it('should throw on invalid tag type', async () => {
       const foo = true;
+      // @ts-ignore
       await renderToString(html`<${foo}></${foo}>`)
         .should.be.rejectedWith('Invalid element type: boolean');
     });
@@ -94,6 +95,7 @@ describe('renderToString()', () => {
 
   describe('tag function', () => {
     it('should handle function tag type', async () => {
+      /** @type {import('..').RenderableElementFunction} */
       const foo = sinon.stub().returns(html`<abc />`);
 
       await renderToString(html`<${foo} />`)
@@ -130,6 +132,7 @@ describe('renderToString()', () => {
     });
 
     it('should throw on invalid child object', async () => {
+      // @ts-ignore
       await renderToString(html`<div>${{ abc: 123 }}</div>`)
         .should.be.rejectedWith('Not an element definition. Missing type in: {"abc":123}');
     });
@@ -140,6 +143,7 @@ describe('renderToString()', () => {
     });
 
     it('should handle null child', async () => {
+      // @ts-ignore
       // eslint-disable-next-line unicorn/no-null
       await renderToString(html`<div>${null}</div>`)
         .should.eventually.equal('<div></div>');
@@ -178,13 +182,19 @@ describe('renderToString()', () => {
     });
 
     it('should handle array child', async () => {
-      await renderToString(html`<ul>${['foo', 'bar'].map(i => html`<li>${i}</li>`)}</ul>`)
+      await renderToString(html`<ul>${['foo', 'bar'].flatMap(i => html`<li>${i}</li>`)}</ul>`)
         .should.eventually.equal('<ul><li>foo</li><li>bar</li></ul>');
     });
 
     it('should have comments ignored', async () => {
       await renderToString(html`<div><!-- foobar --></div>`)
         .should.eventually.equal('<div></div>');
+    });
+
+    it('should handle output as input', async () => {
+      const foo = html`<foo />`;
+      await renderToString(html`<div>${foo}</div>`)
+        .should.eventually.equal('<div><foo></foo></div>');
     });
   });
 
@@ -238,6 +248,7 @@ describe('renderToString()', () => {
     it('should ignore unsupported property types', async () => {
       const consoleErrorStub = sinon.stub(console, 'error');
 
+      // @ts-ignore
       // eslint-disable-next-line unicorn/no-null
       await renderToString(html`<div foo="${() => {}}" bar="${null}" abc="${undefined}" xyz="${{}}"></div>`)
         .should.eventually.equal('<div></div>');

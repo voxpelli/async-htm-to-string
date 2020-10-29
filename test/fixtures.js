@@ -13,6 +13,7 @@ PrototypeIncludingClass.prototype.b = 3;
 PrototypeIncludingClass.prototype.c = 4;
 
 /** @type {import('..').BasicRenderableElement} */
+// @ts-ignore
 const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
   type: 'div',
   props: new PrototypeIncludingClass(),

@@ -4,7 +4,6 @@
 
 // TODO: Use dual-publish
 
-/** @type {import('htm').default} */
 const htm = require('htm');
 
 const is = require('@sindresorhus/is').default;
@@ -72,7 +71,8 @@ const omittedCloseTags = {
 };
 // *** END REACT BORROWED ***
 
-/** @typedef {Record<string, any>} ElementProps */
+/** @typedef {undefined|boolean|string|number} ElementPropsValue */
+/** @typedef {{ [key: string]: ElementPropsValue }} ElementProps */
 
 /**
  * @callback RenderableElementFunction
@@ -89,7 +89,7 @@ const omittedCloseTags = {
  */
 
 /** @typedef {ComplexRenderableElement<string|RenderableElementFunction>} BasicRenderableElement */
-/** @typedef {string|BasicRenderableElement} RenderableElement */
+/** @typedef {string|number|BasicRenderableElement} RenderableElement */
 
 /**
  * @template T
@@ -209,13 +209,17 @@ const _render = async function * (item) {
 };
 
 /**
- * @param {BasicRenderableElement} item
+ * @param {RenderableElement|RenderableElement[]} item
  * @returns {AsyncIterableIterator<string>}
  */
 const render = async function * (item) {
   if (item === undefined) throw new TypeError('Expected an argument');
   if (!item) throw new TypeError(`Expected a non-falsy argument, got: ${item}`);
-  if (typeof item === 'string' || typeof item === 'object') {
+  if (Array.isArray(item)) {
+    for (const value of item) {
+      yield * render(value);
+    }
+  } else if (typeof item === 'string' || typeof item === 'object') {
     yield * _render(item);
   } else {
     throw new TypeError(`Expected a string or an object, got: ${typeof item}`);
@@ -235,7 +239,7 @@ const generatorToString = async (generator) => {
 };
 
 /**
- * @param {BasicRenderableElement} item
+ * @param {RenderableElement|RenderableElement[]} item
  * @returns {Promise<string>}
  */
 const renderToString = async (item) => generatorToString(render(item));
@@ -244,13 +248,16 @@ const renderToString = async (item) => generatorToString(render(item));
  * @param {string|RenderableElementFunction} type
  * @param {ElementProps} props
  * @param  {...RenderableElement} children
- * @returns {ComplexRenderableElement<string|RenderableElementFunction>}
+ * @returns {BasicRenderableElement}
  */
 const h = (type, props, ...children) => {
   return { type, props: props || {}, children };
 };
 
-const html = htm.bind(h);
+/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => RenderableElement|RenderableElement[]} */
+const html =
+  // @ts-ignore
+  htm.bind(h);
 
 module.exports = {
   generatorToString,

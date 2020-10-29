@@ -1,13 +1,14 @@
 {
   "files": [
-    "index.js",
+    "index.js"
   ],
   "include": [
-    "test/**/*.js",
+    "test/**/*.js"
   ],
   "compilerOptions": {
     /* Basic Options */
     "target": "ES2017",
+    "lib": ["ESNext.Array"],
     "module": "commonjs",
     "allowJs": true,
     "checkJs": true,

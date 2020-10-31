@@ -78,6 +78,7 @@ const omittedCloseTags = {
  * @callback RenderableElementFunction
  * @param {ElementProps} props
  * @param {RenderableElement[]} children
+ * @returns {HtmlMethodResult}
  */
 
 /**
@@ -90,6 +91,7 @@ const omittedCloseTags = {
 
 /** @typedef {ComplexRenderableElement<string|RenderableElementFunction>} BasicRenderableElement */
 /** @typedef {string|number|BasicRenderableElement} RenderableElement */
+/** @typedef {(BasicRenderableElement|string)[]|BasicRenderableElement|string} HtmlMethodResult */
 
 /**
  * @template T
@@ -209,7 +211,7 @@ const _render = async function * (item) {
 };
 
 /**
- * @param {RenderableElement|RenderableElement[]} item
+ * @param {HtmlMethodResult} item
  * @returns {AsyncIterableIterator<string>}
  */
 const render = async function * (item) {
@@ -239,7 +241,7 @@ const generatorToString = async (generator) => {
 };
 
 /**
- * @param {RenderableElement|RenderableElement[]} item
+ * @param {HtmlMethodResult} item
  * @returns {Promise<string>}
  */
 const renderToString = async (item) => generatorToString(render(item));
@@ -254,10 +256,48 @@ const h = (type, props, ...children) => {
   return { type, props: props || {}, children };
 };
 
-/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => RenderableElement|RenderableElement[]} */
-const html =
+/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => any} */
+const _internalHtml =
   // @ts-ignore
   htm.bind(h);
+
+/**
+ * @param {unknown} result
+ * @returns {BasicRenderableElement|string}
+ */
+const _checkHtmlResult = (result) => {
+  if (typeof result === 'number') {
+    return result + '';
+  } else if (!result) {
+    return '';
+  } else if (typeof result === 'string') {
+    return result;
+  } else if (typeof result === 'object' && result !== null) {
+    if (Array.isArray(result)) {
+      throw new TypeError(`Unexpected nested array value found`);
+    }
+    /** @type {BasicRenderableElement} */
+    // @ts-ignore
+    const element = result;
+    const { type = '', props = {}, children = [] } = element;
+    return { type, props, children };
+  } else {
+    throw new TypeError(`Resolved to invalid value type: ${typeof result}`);
+  }
+};
+
+/**
+ * @param {TemplateStringsArray} strings
+ * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]} values
+ * @returns {HtmlMethodResult}
+ */
+const html = (strings, ...values) => {
+  const result = _internalHtml(strings, ...values);
+
+  return Array.isArray(result)
+    ? result.map(item => _checkHtmlResult(item))
+    : _checkHtmlResult(result);
+};
 
 module.exports = {
   generatorToString,

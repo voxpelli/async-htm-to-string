@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {import('..').BasicRenderableElement} */
+/** @type {import('..').HtmlMethodResult} */
 const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [] });
 
 const PrototypeIncludingClass = function () {
@@ -12,7 +12,7 @@ const PrototypeIncludingClass = function () {
 PrototypeIncludingClass.prototype.b = 3;
 PrototypeIncludingClass.prototype.c = 4;
 
-/** @type {import('..').BasicRenderableElement} */
+/** @type {import('..').HtmlMethodResult} */
 // @ts-ignore
 const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
   type: 'div',

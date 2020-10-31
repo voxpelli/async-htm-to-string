@@ -24,7 +24,10 @@
     "prepublishOnly": "run-s build",
     "test:mocha": "c8 --reporter=lcov --reporter text mocha 'test/**/*.spec.js'",
     "test-ci": "run-s test:*",
-    "test": "run-s check test:*"
+    "test": "run-s check test:*",
+    "watch:build": "nodemon -x \"run-s build\"",
+    "watch:tsd": "nodemon -e ts -x \"npx tsd\"",
+    "watch": "run-p watch:*"
   },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
@@ -63,9 +66,11 @@
     "eslint-plugin-unicorn": "^19.0.1",
     "installed-check": "^3.0.0",
     "mocha": "^8.2.0",
+    "nodemon": "^2.0.6",
     "npm-run-all": "^4.1.5",
     "sinon": "^9.2.1",
     "sinon-chai": "^3.5.0",
+    "tsd": "^0.13.1",
     "typescript": "^4.0.3"
   }
 }

@@ -47,6 +47,11 @@ describe('renderToString()', () => {
       await renderToString(html`<div /><div />`)
         .should.eventually.equal('<div></div><div></div>');
     });
+
+    it('should handle plain string', async () => {
+      await renderToString(html`foo`)
+        .should.eventually.equal('foo');
+    });
   });
 
   describe('tags', () => {

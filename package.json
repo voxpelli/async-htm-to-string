@@ -29,6 +29,11 @@
     "watch:tsd": "nodemon -e ts -x \"npx tsd\"",
     "watch": "run-p watch:*"
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  },
   "keywords": [],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
   "license": "MIT",

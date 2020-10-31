@@ -13,10 +13,12 @@ yarn add async-htm-to-string
 ```
 
 ```javascript
-const { html, render } = require('async-htm-to-string');
+const { html, renderToString } = require('async-htm-to-string');
 
-const content = 'wow';
-const result = render(html`<div>${content}</div>`);
+const customTag = ({ prefix }, children) => html`<div>${prefix}-${children}</div>`;
+const dynamicContent = 'bar';
+// Will equal "<div>foo-bar</div>
+const result = await renderToString(html`<${customTag} prefix="foo">${dynamicContent}</${customTag}>`);
 ```
 
 ## API

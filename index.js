@@ -2,12 +2,10 @@
 
 'use strict';
 
-// TODO: Use dual-publish
+const htm = require('htm'); // esm-replace-with: import htm from 'htm';
 
-const htm = require('htm');
-
-const is = require('@sindresorhus/is').default;
-const escape = require('stringify-entities');
+const is = require('@sindresorhus/is').default; // esm-replace-with: import is from '@sindresorhus/is';
+const escape = require('stringify-entities'); // esm-replace-with: import escape from 'stringify-entities';
 
 // *** REACT BORROWED ***
 const ATTRIBUTE_NAME_START_CHAR =
@@ -214,7 +212,7 @@ const _render = async function * (item) {
  * @param {HtmlMethodResult} item
  * @returns {AsyncIterableIterator<string>}
  */
-const render = async function * (item) {
+const render = async function * (item) { // esm-prefix-with: export
   if (item === undefined) throw new TypeError('Expected an argument');
   if (!item) throw new TypeError(`Expected a non-falsy argument, got: ${item}`);
   if (Array.isArray(item)) {
@@ -232,7 +230,7 @@ const render = async function * (item) {
  * @param {IterableIteratorMaybeAsync<string>} generator
  * @returns {Promise<string>}
  */
-const generatorToString = async (generator) => {
+const generatorToString = async (generator) => { // esm-prefix-with: export
   let result = '';
   for await (const item of generator) {
     result += item;
@@ -244,7 +242,7 @@ const generatorToString = async (generator) => {
  * @param {HtmlMethodResult} item
  * @returns {Promise<string>}
  */
-const renderToString = async (item) => generatorToString(render(item));
+const renderToString = async (item) => generatorToString(render(item)); // esm-prefix-with: export
 
 /**
  * @param {string|RenderableElementFunction} type
@@ -252,7 +250,7 @@ const renderToString = async (item) => generatorToString(render(item));
  * @param  {...RenderableElement} children
  * @returns {BasicRenderableElement}
  */
-const h = (type, props, ...children) => {
+const h = (type, props, ...children) => { // esm-prefix-with: export
   return { type, props: props || {}, children };
 };
 
@@ -296,7 +294,7 @@ const _checkHtmlResult = (result) => {
  * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]} values
  * @returns {HtmlMethodResult}
  */
-const html = (strings, ...values) => {
+const html = (strings, ...values) => { // esm-prefix-with: export
   const result = _internalHtml(strings, ...values);
 
   if (!Array.isArray(result)) return _checkHtmlResult(result);
@@ -307,10 +305,10 @@ const html = (strings, ...values) => {
   return unknownArray.map(item => _checkHtmlResult(item));
 };
 
-module.exports = {
-  generatorToString,
-  html,
-  h,
-  render,
-  renderToString,
-};
+module.exports = {   // esm-remove
+  generatorToString, // esm-remove
+  html,              // esm-remove
+  h,                 // esm-remove
+  render,            // esm-remove
+  renderToString,    // esm-remove
+};                   // esm-remove

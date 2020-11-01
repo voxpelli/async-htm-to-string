@@ -8,10 +8,22 @@
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
   },
   "main": "index.js",
+  "module": "index.mjs",
   "types": "index.d.ts",
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.mjs"
+  },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.ts"
+  ],
   "scripts": {
     "build:0": "run-s clean",
-    "build:1-declaration": "tsc -p declaration.tsconfig.json",
+    "build:1:declaration": "tsc -p declaration.tsconfig.json",
+    "build:1:commonjs": "node build-esm.js",
+    "build:1": "run-p build:1:*",
     "build": "run-s build:*",
     "check:dependency-check": "dependency-check *.js 'test/**/*.js' --no-dev -i type-fest",
     "check:installed-check": "installed-check -i eslint",

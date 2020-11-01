@@ -13,3 +13,4 @@
 *.d.ts
 
 # Library specific ones
+index.mjs

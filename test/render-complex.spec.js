@@ -21,6 +21,7 @@ const {
 } = require('..');
 
 const {
+  ELEMENT_FIXTURE_INVALID_TYPE,
   ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
 } = require('./fixtures');
 
@@ -61,9 +62,8 @@ describe('renderToString()', () => {
     });
 
     it('should throw on invalid tag type', async () => {
-      const foo = true;
       // @ts-ignore
-      await renderToString(html`<${foo}></${foo}>`)
+      await renderToString(ELEMENT_FIXTURE_INVALID_TYPE)
         .should.be.rejectedWith('Invalid element type: boolean');
     });
 

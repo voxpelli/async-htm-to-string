@@ -104,6 +104,7 @@ describe('html``', () => {
 
   it('should throw on invalid root type', () => {
     should.Throw(() => { html`${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
+    should.Throw(() => { html`${{}}`; }, TypeError, 'Resolved to invalid type of object value "type" property: undefined');
     // @ts-ignore
     should.Throw(() => { html`${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
     // @ts-ignore

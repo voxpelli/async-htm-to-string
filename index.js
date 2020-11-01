@@ -256,7 +256,7 @@ const h = (type, props, ...children) => {
   return { type, props: props || {}, children };
 };
 
-/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => any} */
+/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => unknown} */
 const _internalHtml =
   // @ts-ignore
   htm.bind(h);
@@ -279,8 +279,13 @@ const _checkHtmlResult = (result) => {
     /** @type {BasicRenderableElement} */
     // @ts-ignore
     const element = result;
-    const { type = '', props = {}, children = [] } = element;
-    return { type, props, children };
+    const { type, props = {}, children = [] } = element;
+
+    if (typeof type === 'string' || typeof type === 'function') {
+      return { type, props, children };
+    }
+
+    throw new TypeError(`Resolved to invalid type of object value "type" property: ${typeof type}`);
   } else {
     throw new TypeError(`Resolved to invalid value type: ${typeof result}`);
   }
@@ -294,9 +299,12 @@ const _checkHtmlResult = (result) => {
 const html = (strings, ...values) => {
   const result = _internalHtml(strings, ...values);
 
-  return Array.isArray(result)
-    ? result.map(item => _checkHtmlResult(item))
-    : _checkHtmlResult(result);
+  if (!Array.isArray(result)) return _checkHtmlResult(result);
+
+  /** @type {unknown[]} */
+  const unknownArray = result;
+
+  return unknownArray.map(item => _checkHtmlResult(item));
 };
 
 module.exports = {

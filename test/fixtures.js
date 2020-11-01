@@ -3,6 +3,8 @@
 /** @type {import('..').HtmlMethodResult} */
 const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [] });
 
+const ELEMENT_FIXTURE_INVALID_TYPE = Object.freeze({ type: true, props: {}, children: [] });
+
 const PrototypeIncludingClass = function () {
   this.a = 1;
   this.b = 2;
@@ -22,5 +24,6 @@ const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
 
 module.exports = {
   ELEMENT_FIXTURE,
+  ELEMENT_FIXTURE_INVALID_TYPE,
   ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
 };

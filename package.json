@@ -28,7 +28,7 @@
     "check:dependency-check": "dependency-check *.js 'test/**/*.js' --no-dev -i type-fest",
     "check:installed-check": "installed-check -i eslint",
     "check:lint": "eslint .",
-    "skip-check:skypack": "package-check",
+    "check:skypack": "package-check",
     "check:tsc": "tsc",
     "check:type-coverage": "type-coverage --detail --strict --at-least 100",
     "check": "run-s clean && run-p -c --aggregate-output check:*",
@@ -47,7 +47,19 @@
       "pre-push": "npm test"
     }
   },
-  "keywords": [],
+  "keywords": [
+    "tagged template",
+    "template literals",
+    "htm",
+    "html",
+    "async",
+    "asyncgenerator",
+    "asynciterator",
+    "asynciterable",
+    "promise",
+    "server-side rendering",
+    "ssr"
+  ],
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
   "license": "MIT",
   "engines": {

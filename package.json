@@ -16,9 +16,10 @@
     "check:dependency-check": "dependency-check *.js 'test/**/*.js' --no-dev -i type-fest",
     "check:installed-check": "installed-check -i eslint",
     "check:lint": "eslint .",
-    "check:skypack": "package-check | echo \"\"",
+    "skip-check:skypack": "package-check",
     "check:tsc": "tsc",
-    "check": "run-s clean && run-p check:*",
+    "check:type-coverage": "type-coverage --detail --strict --at-least 100",
+    "check": "run-s clean && run-p -c --aggregate-output check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts')",
     "clean": "run-p clean:*",
     "prepublishOnly": "run-s build",
@@ -77,6 +78,7 @@
     "sinon": "^9.2.1",
     "sinon-chai": "^3.5.0",
     "tsd": "^0.13.1",
+    "type-coverage": "^2.14.2",
     "typescript": "^4.0.3"
   }
 }

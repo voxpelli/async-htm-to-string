@@ -3,14 +3,14 @@
 'use strict';
 
 const { readFile, writeFile } = require('fs').promises;
-const { resolve } = require('path');
+const pathModule = require('path');
 
 const fileMap = [
   'index.js'
 ];
 (async () => {
   for (const file of fileMap) {
-    const filePath = resolve(__dirname, file);
+    const filePath = pathModule.resolve(__dirname, file);
 
     const content = await readFile(filePath, 'utf8');
 

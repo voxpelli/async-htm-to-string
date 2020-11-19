@@ -146,13 +146,13 @@ const _renderStringItem = async function * (item) {
   if (Object.prototype.hasOwnProperty.call(omittedCloseTags, type)) {
     yield `<${tag}`;
     yield * _renderProps(props);
-    yield ` />`;
+    yield ' />';
   } else if (!isTagValid(tag)) {
     throw new Error(`Invalid tag name: ${tag}`);
   } else {
     yield `<${tag}`;
     yield * _renderProps(props);
-    yield `>`;
+    yield '>';
     yield * _render(children);
     yield `</${tag}>`;
   }
@@ -272,7 +272,7 @@ const _checkHtmlResult = (result) => {
     return result;
   } else if (typeof result === 'object' && result !== null) {
     if (Array.isArray(result)) {
-      throw new TypeError(`Unexpected nested array value found`);
+      throw new TypeError('Unexpected nested array value found');
     }
     /** @type {BasicRenderableElement} */
     // @ts-ignore

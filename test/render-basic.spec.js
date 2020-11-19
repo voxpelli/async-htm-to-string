@@ -22,7 +22,7 @@ describe('render() basic', () => {
   it('should throw on no argument', async () => {
     await (async () => {
       // @ts-ignore
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars, no-empty
       for await (const _foo of render()) {}
     })()
       .should.be.rejectedWith(TypeError, 'Expected an argument');
@@ -31,7 +31,7 @@ describe('render() basic', () => {
   it('should throw on null argument', async () => {
     await (async () => {
       // @ts-ignore
-      // eslint-disable-next-line no-unused-vars,unicorn/no-null
+      // eslint-disable-next-line no-unused-vars, no-empty, unicorn/no-null
       for await (const _foo of render(null)) {}
     })()
       .should.be.rejectedWith(TypeError, 'Expected a non-falsy argument, got: null');
@@ -40,7 +40,7 @@ describe('render() basic', () => {
   it('should throw on empty string argument', async () => {
     await (async () => {
       // @ts-ignore
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars, no-empty
       for await (const _foo of render('')) {}
     })()
       .should.be.rejectedWith(TypeError, 'Expected a non-falsy argument, got: ');
@@ -49,7 +49,7 @@ describe('render() basic', () => {
   it('should throw on unsupported argument', async () => {
     await (async () => {
       // @ts-ignore
-      // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars, no-empty
       for await (const _foo of render(true)) {}
     })()
       .should.be.rejectedWith(TypeError, 'Expected a string or an object, got: boolean');

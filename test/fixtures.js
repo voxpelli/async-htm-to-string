@@ -3,6 +3,16 @@
 /** @type {import('..').HtmlMethodResult} */
 const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [] });
 
+/** @type {import('..').HtmlMethodResult} */
+const ELEMENT_ARRAY_CHILD_FIXTURE = Object.freeze({
+  type: 'ul',
+  props: {},
+  children: [
+    { type: 'li', props: {}, children: ['One'] },
+    { type: 'li', props: {}, children: ['Two'] },
+  ],
+});
+
 const ELEMENT_FIXTURE_INVALID_TYPE = Object.freeze({ type: true, props: {}, children: [] });
 
 const PrototypeIncludingClass = function () {
@@ -24,6 +34,7 @@ const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
 
 module.exports = {
   ELEMENT_FIXTURE,
+  ELEMENT_ARRAY_CHILD_FIXTURE,
   ELEMENT_FIXTURE_INVALID_TYPE,
   ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
 };

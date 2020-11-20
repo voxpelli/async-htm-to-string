@@ -16,6 +16,7 @@ const {
 
 const {
   ELEMENT_FIXTURE,
+  ELEMENT_ARRAY_CHILD_FIXTURE,
 } = require('./fixtures');
 
 describe('html``', () => {
@@ -55,6 +56,16 @@ describe('html``', () => {
 
     should.exist(result);
     result.should.deep.equal(fixture);
+  });
+
+  it('should handle array content', () => {
+    const list = [
+      html`<li>One</li>`,
+      html`<li>Two</li>`,
+    ].flat();
+    const result = html`<ul>${list}</ul>`;
+    should.exist(result);
+    result.should.deep.equal(ELEMENT_ARRAY_CHILD_FIXTURE);
   });
 
   it('should handle simple root example', () => {

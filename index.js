@@ -280,7 +280,7 @@ const _checkHtmlResult = (result) => {
     const { type, props = {}, children = [] } = element;
 
     if (typeof type === 'string' || typeof type === 'function') {
-      return { type, props, children };
+      return { type, props, children: children.flat() };
     }
 
     throw new TypeError(`Resolved to invalid type of object value "type" property: ${typeof type}`);

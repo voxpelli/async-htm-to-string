@@ -96,12 +96,12 @@ const omittedCloseTags = {
  * @typedef {T[]|IterableIterator<T>|AsyncIterableIterator<T>} IterableIteratorMaybeAsync
  */
 
+// eslint-disable-next-line jsdoc/require-returns-check
 /**
- *
  * @param {ElementProps} props
- * @returns {AsyncIterableIterator<string>}
+ * @returns {Generator<string>}
  */
-const _renderProps = async function * (props) {
+const _renderProps = function * (props) {
   // *** REACT BORROWED https://github.com/facebook/react/blob/779a472b0901b2d28e382f3850b2ad09a555b014/packages/react-dom/src/server/DOMMarkupOperations.js#L48-L72 ***
   for (const propKey in props) {
     if (!Object.prototype.hasOwnProperty.call(props, propKey)) {

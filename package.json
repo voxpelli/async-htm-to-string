@@ -94,7 +94,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-unicorn": "^23.0.0",
-    "husky": "^4.3.4",
+    "husky": "^5.0.4",
     "installed-check": "^3.0.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",

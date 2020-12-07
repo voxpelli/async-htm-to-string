@@ -16,6 +16,8 @@
     "noEmit": true,
     "esModuleInterop": true,
 
+    "removeComments": true,
+
     /* Strict Type-Checking Options */
     "strict": true,
     "noImplicitThis": true,

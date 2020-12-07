@@ -33,9 +33,9 @@ describe('renderToString()', () => {
   describe('complex', () => {
     it('should be able to render a complex example', async () => {
       const foo = 'woot';
-      /** @type {import('..').RenderableElementFunction} */
+      /** @type {import('..').SimpleRenderableElementFunction} */
       const abc = (_props, children) => html`<cool>${children}</cool>`;
-      /** @type {import('..').RenderableElementFunction} */
+      /** @type {import('..').SimpleRenderableElementFunction} */
       const bar = (_props, children) => html`<wowzors class="wow"><${abc}>${children}<//></wowzors>`;
       const danger = '<div>w0000000000t</div>';
       const wow = html`<div class="${['prop1', 'prop2'].join(' ')}" data-foo="123">  <img src="#" /> <${bar}>    <${foo}>YEA&H!${danger}</${foo}></${bar}></div>`;
@@ -100,7 +100,7 @@ describe('renderToString()', () => {
 
   describe('tag function', () => {
     it('should handle function tag type', async () => {
-      /** @type {import('..').RenderableElementFunction} */
+      /** @type {import('..').SimpleRenderableElementFunction} */
       const foo = sinon.stub().returns(html`<abc />`);
 
       await renderToString(html`<${foo} />`)

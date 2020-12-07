@@ -69,27 +69,42 @@ const omittedCloseTags = {
 };
 // *** END REACT BORROWED ***
 
-/** @typedef {undefined|boolean|string|number} ElementPropsValue */
+/**
+ * @template T
+ * @typedef {T|T[]} MaybeArray
+ */
+
+/** @typedef {undefined|boolean|string|number|any[]|Record<string,any>|Set<any>|Map<any,any>} ElementPropsValue */
 /** @typedef {{ [key: string]: ElementPropsValue }} ElementProps */
 
 /**
+ * @template {ElementProps} Props
  * @callback RenderableElementFunction
- * @param {ElementProps} props
+ * @param {Props} props
  * @param {RenderableElement[]} children
  * @returns {HtmlMethodResult}
  */
 
+/** @typedef {RenderableElementFunction<ElementProps>} SimpleRenderableElementFunction */
+
 /**
- * @template {string|RenderableElementFunction} T
- * @typedef ComplexRenderableElement
- * @property {T} type
- * @property {ElementProps} props
+ * @template {ElementProps} Props
+ * @typedef StringRenderableElement
+ * @property {string} type
+ * @property {Props} props
  * @property {RenderableElement[]} children
  */
 
-/** @typedef {ComplexRenderableElement<string|RenderableElementFunction>} BasicRenderableElement */
-/** @typedef {string|number|BasicRenderableElement} RenderableElement */
-/** @typedef {(BasicRenderableElement|string)[]|BasicRenderableElement|string} HtmlMethodResult */
+/**
+ * @template {ElementProps} Props
+ * @typedef BasicRenderableElement
+ * @property {string|RenderableElementFunction<Props>} type
+ * @property {Props} props
+ * @property {RenderableElement[]} children
+ */
+
+/** @typedef {string|number|BasicRenderableElement<any>} RenderableElement */
+/** @typedef {MaybeArray<BasicRenderableElement<ElementProps>|string>} HtmlMethodResult */
 
 /**
  * @template T
@@ -135,7 +150,8 @@ const _renderProps = function * (props) {
 };
 
 /**
- * @param {ComplexRenderableElement<string>} item
+ * @template {ElementProps} Props
+ * @param {StringRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderStringItem = async function * (item) {
@@ -159,7 +175,8 @@ const _renderStringItem = async function * (item) {
 };
 
 /**
- * @param {BasicRenderableElement} item
+ * @template {ElementProps} Props
+ * @param {BasicRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderElement = async function * (item) {
@@ -245,23 +262,24 @@ const generatorToString = async (generator) => { // esm-prefix-with: export
 const renderToString = async (item) => generatorToString(render(item)); // esm-prefix-with: export
 
 /**
- * @param {string|RenderableElementFunction} type
- * @param {ElementProps} props
+ * @template {ElementProps} T
+ * @param {string|RenderableElementFunction<T>} type
+ * @param {T} props
  * @param  {...RenderableElement} children
- * @returns {BasicRenderableElement}
+ * @returns {BasicRenderableElement<T>}
  */
 const h = (type, props, ...children) => { // esm-prefix-with: export
   return { type, props: props || {}, children };
 };
 
-/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]>) => unknown} */
+/** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction<any>|RenderableElement|RenderableElement[]>) => unknown} */
 const _internalHtml =
   // @ts-ignore
   htm.bind(h);
 
 /**
  * @param {unknown} result
- * @returns {BasicRenderableElement|string}
+ * @returns {BasicRenderableElement<ElementProps>|string}
  */
 const _checkHtmlResult = (result) => {
   if (typeof result === 'number') {
@@ -274,7 +292,7 @@ const _checkHtmlResult = (result) => {
     if (Array.isArray(result)) {
       throw new TypeError('Unexpected nested array value found');
     }
-    /** @type {BasicRenderableElement} */
+    /** @type {BasicRenderableElement<ElementProps>} */
     // @ts-ignore
     const element = result;
     const { type, props = {}, children = [] } = element;
@@ -291,7 +309,7 @@ const _checkHtmlResult = (result) => {
 
 /**
  * @param {TemplateStringsArray} strings
- * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction|RenderableElement|RenderableElement[]} values
+ * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction<any>|RenderableElement|RenderableElement[]} values
  * @returns {HtmlMethodResult}
  */
 const html = (strings, ...values) => { // esm-prefix-with: export

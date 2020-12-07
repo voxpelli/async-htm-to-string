@@ -21,9 +21,9 @@ const {
 
 describe('html``', () => {
   it('should handle complex example', () => {
-    /** @type {import('..').RenderableElementFunction} */
+    /** @type {import('..').SimpleRenderableElementFunction} */
     const abc = (_props, children) => html`<cool>${children}</cool>`;
-    /** @type {import('..').RenderableElementFunction} */
+    /** @type {import('..').SimpleRenderableElementFunction} */
     const bar = (_props, children) => html`<wowzors class="wow"><${abc}>${children}<//></wowzors>`;
 
     /** @type {import('..').HtmlMethodResult} */

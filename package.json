@@ -32,7 +32,7 @@
     "check:1:lint": "eslint .",
     "check:1:skypack": "package-check",
     "check:1:tsc": "tsc",
-    "check:1:type-coverage": "type-coverage --detail --strict --at-least 100",
+    "check:1:type-coverage": "type-coverage --detail --strict --at-least 100 --ignore-files 'test/*'",
     "check:1": "run-p -c --aggregate-output check:1:*",
     "check:2": "run-s build:1:declaration",
     "check:3": "tsd",
@@ -107,7 +107,7 @@
     "sinon": "^9.2.2",
     "sinon-chai": "^3.5.0",
     "tsd": "^0.14.0",
-    "type-coverage": "^2.14.6",
+    "type-coverage": "^2.14.8",
     "typescript": "^4.1.3"
   }
 }

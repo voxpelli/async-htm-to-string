@@ -2,10 +2,10 @@
 
 'use strict';
 
-const htm = require('htm'); // esm-replace-with: import htm from 'htm';
+const htm = require('htm'); // linemod-replace-with: import htm from 'htm';
 
-const is = require('@sindresorhus/is').default; // esm-replace-with: import is from '@sindresorhus/is';
-const escape = require('stringify-entities'); // esm-replace-with: import escape from 'stringify-entities';
+const is = require('@sindresorhus/is').default; // linemod-replace-with: import is from '@sindresorhus/is';
+const escape = require('stringify-entities'); // linemod-replace-with: import escape from 'stringify-entities';
 
 // *** REACT BORROWED ***
 const ATTRIBUTE_NAME_START_CHAR =
@@ -229,7 +229,7 @@ const _render = async function * (item) {
  * @param {HtmlMethodResult} item
  * @returns {AsyncIterableIterator<string>}
  */
-const render = async function * (item) { // esm-prefix-with: export
+const render = async function * (item) { // linemod-prefix-with: export
   if (item === undefined) throw new TypeError('Expected an argument');
   if (!item) throw new TypeError(`Expected a non-falsy argument, got: ${item}`);
   if (Array.isArray(item)) {
@@ -247,7 +247,7 @@ const render = async function * (item) { // esm-prefix-with: export
  * @param {IterableIteratorMaybeAsync<string>} generator
  * @returns {Promise<string>}
  */
-const generatorToString = async (generator) => { // esm-prefix-with: export
+const generatorToString = async (generator) => { // linemod-prefix-with: export
   let result = '';
   for await (const item of generator) {
     result += item;
@@ -259,7 +259,7 @@ const generatorToString = async (generator) => { // esm-prefix-with: export
  * @param {HtmlMethodResult} item
  * @returns {Promise<string>}
  */
-const renderToString = async (item) => generatorToString(render(item)); // esm-prefix-with: export
+const renderToString = async (item) => generatorToString(render(item)); // linemod-prefix-with: export
 
 /**
  * @template {ElementProps} T
@@ -268,7 +268,7 @@ const renderToString = async (item) => generatorToString(render(item)); // esm-p
  * @param  {...RenderableElement} children
  * @returns {BasicRenderableElement<T>}
  */
-const h = (type, props, ...children) => { // esm-prefix-with: export
+const h = (type, props, ...children) => { // linemod-prefix-with: export
   return { type, props: props || {}, children };
 };
 
@@ -312,7 +312,7 @@ const _checkHtmlResult = (result) => {
  * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction<any>|RenderableElement|RenderableElement[]} values
  * @returns {HtmlMethodResult}
  */
-const html = (strings, ...values) => { // esm-prefix-with: export
+const html = (strings, ...values) => { // linemod-prefix-with: export
   const result = _internalHtml(strings, ...values);
 
   if (!Array.isArray(result)) return _checkHtmlResult(result);
@@ -323,10 +323,10 @@ const html = (strings, ...values) => { // esm-prefix-with: export
   return unknownArray.map(item => _checkHtmlResult(item));
 };
 
-module.exports = {   // esm-remove
-  generatorToString, // esm-remove
-  html,              // esm-remove
-  h,                 // esm-remove
-  render,            // esm-remove
-  renderToString,    // esm-remove
-};                   // esm-remove
+module.exports = {   // linemod-remove
+  generatorToString, // linemod-remove
+  html,              // linemod-remove
+  h,                 // linemod-remove
+  render,            // linemod-remove
+  renderToString,    // linemod-remove
+};                   // linemod-remove

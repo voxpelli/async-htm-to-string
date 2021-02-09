@@ -31,6 +31,24 @@ Is `h()` bound to [`htm`](https://www.npmjs.com/package/htm) (`htm.bind(h)`). Us
 const renderableElement = html`<div>${content}</div>`;
 ```
 
+### `rawHtml / rawHtml(rawString)`
+
+If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with the
+
+```javascript
+const renderableElement = rawHtml`<div>&amp;${'&quot;'}</div>`;
+```
+
+```javascript
+const renderableElement = rawHtml('<div>&amp;</div>');
+```
+
+You can also use the result of any of those `rawHtml` inside `html`, like:
+
+```javascript
+const renderableElement = html`<div>${rawHtml`&amp;`}</div>`;
+```
+
 ### `h(type, props, ...children)`
 
 The inner method that's `htm` is bound to.

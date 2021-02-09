@@ -17,6 +17,7 @@ process.on('unhandledRejection', reason => { throw reason; });
 
 const {
   html,
+  rawHtml,
   renderToString,
 } = require('..');
 
@@ -232,6 +233,26 @@ describe('renderToString()', () => {
     it('should escape string props', async () => {
       await renderToString(html`<div foo="${'"bar"'}" yay="${'<div>'}" xyz="ab&c"></div>`)
         .should.eventually.equal('<div foo="&quot;bar&quot;" yay="&lt;div&gt;" xyz="ab&amp;c"></div>');
+    });
+
+    it('should escape string content', async () => {
+      await renderToString(html`<div>${'"bar"'}${'<div>'}ab&c</div>`)
+        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
+    });
+
+    it('should not escape raw html given through template literal rawHtml``', async () => {
+      await renderToString(rawHtml`<div>${'&quot;bar&quot;'}&lt;div&gt;ab&amp;c</div>`)
+        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
+    });
+
+    it('should not escape raw html given through direct call to rawHtml()', async () => {
+      await renderToString(rawHtml('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>'))
+        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
+    });
+
+    it('should support rawHtml() as child content in ordinary html', async () => {
+      await renderToString(html`<div>${'<div>'}${rawHtml`<div>`}${rawHtml('<div>')}</div>`)
+        .should.eventually.equal('<div>&lt;div&gt;<div><div></div>');
     });
 
     it('should correctly enumerate a non-plain object', async () => {

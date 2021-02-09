@@ -101,6 +101,7 @@ const omittedCloseTags = {
  * @property {string|RenderableElementFunction<Props>} type
  * @property {Props} props
  * @property {RenderableElement[]} children
+ * @property {boolean} [skipStringEscape]
  */
 
 /** @typedef {string|number|BasicRenderableElement<any>} RenderableElement */
@@ -180,14 +181,21 @@ const _renderStringItem = async function * (item) {
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderElement = async function * (item) {
-  const { type, props, children } = item;
+  const { type, props, children, skipStringEscape } = item;
 
   if (type === undefined) {
     throw new TypeError('Not an element definition. Missing type in: ' + JSON.stringify(item).slice(0, 50));
   } else if (type === '') {
     yield * _render(children);
   } else if (typeof type === 'function') {
-    yield * _render(type(props, children));
+    const result = type(props, children);
+    if (!skipStringEscape) {
+      yield * _render(result);
+    } else if (typeof result !== 'string') {
+      throw new TypeError('skipStringEscape can only be used with string results');
+    } else {
+      yield result;
+    }
   } else if (typeof type === 'string') {
     yield * _renderStringItem({ type, props, children });
   } else {
@@ -323,10 +331,22 @@ const html = (strings, ...values) => { // linemod-prefix-with: export
   return unknownArray.map(item => _checkHtmlResult(item));
 };
 
+/**
+ * @param {TemplateStringsArray|string} strings
+ * @param  {...(string|number)} values
+ * @returns {BasicRenderableElement<{}>}
+ */
+const rawHtml = (strings, ...values) => { // linemod-prefix-with: export
+  /** @type {RenderableElementFunction<{}>} */
+  const type = () => typeof strings === 'string' ? strings : String.raw(strings, ...values);
+  return { type, props: {}, children: [], skipStringEscape: true };
+};
+
 module.exports = {   // linemod-remove
   generatorToString, // linemod-remove
   html,              // linemod-remove
   h,                 // linemod-remove
+  rawHtml,           // linemod-remove
   render,            // linemod-remove
   renderToString,    // linemod-remove
 };                   // linemod-remove

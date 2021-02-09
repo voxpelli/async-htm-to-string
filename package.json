@@ -1,6 +1,6 @@
 {
   "name": "async-htm-to-string",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "Renders a htm tagged template asyncly into a string",
   "homepage": "http://github.com/voxpelli/async-htm-to-string",
   "repository": {

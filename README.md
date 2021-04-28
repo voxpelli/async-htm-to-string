@@ -2,7 +2,8 @@
 
 Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly into a string.
 
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat)](https://github.com/standard/semistandard)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=for-the-badge)](https://github.com/voxpelli/eslint-config)
+[![ES Module Ready Badge](https://img.shields.io/badge/es%20module%20ready-yes-success?labelColor=ffb703&cacheSeconds=86400&style=for-the-badge)](https://esmodules.dev/)
 
 ## Usage
 

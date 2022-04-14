@@ -50,7 +50,7 @@
     "check:1:lint": "eslint .",
     "check:1:skypack": "package-check",
     "check:1:tsc": "tsc",
-    "check:1:type-coverage": "type-coverage --detail --strict --at-least 100 --ignore-files 'test/*'",
+    "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'",
     "check:1": "run-p -c --aggregate-output check:1:*",
     "check:2": "run-s build:1:declaration",
     "check:3": "tsd",
@@ -80,11 +80,12 @@
     "@types/chai": "^4.2.16",
     "@types/chai-as-promised": "^7.1.3",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^12.20.6",
+    "@types/node": "^14.18.13",
     "@types/sinon": "^9.0.11",
     "@types/sinon-chai": "^3.2.5",
     "@voxpelli/eslint-config": "^13.0.3",
     "@voxpelli/eslint-config-jsdoc-ts": "^1.0.0",
+    "@voxpelli/tsconfig": "^3.2.0",
     "c8": "^7.7.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
@@ -108,8 +109,8 @@
     "npm-run-all": "^4.1.5",
     "sinon": "^10.0.0",
     "sinon-chai": "^3.6.0",
-    "tsd": "^0.14.0",
-    "type-coverage": "^2.17.0",
-    "typescript": "^4.2.3"
+    "tsd": "^0.20.0",
+    "type-coverage": "^2.21.1",
+    "typescript": "~4.6.0"
   }
 }

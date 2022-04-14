@@ -15,8 +15,8 @@ const {
 } = require('..');
 
 const {
-  ELEMENT_FIXTURE,
   ELEMENT_ARRAY_CHILD_FIXTURE,
+  ELEMENT_FIXTURE,
 } = require('./fixtures');
 
 describe('html``', () => {

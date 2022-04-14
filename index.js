@@ -156,7 +156,7 @@ const _renderProps = function * (props) {
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderStringItem = async function * (item) {
-  const { type, props, children } = item;
+  const { children, props, type } = item;
 
   const tag = type.toLowerCase();
 
@@ -181,7 +181,7 @@ const _renderStringItem = async function * (item) {
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderElement = async function * (item) {
-  const { type, props, children, skipStringEscape } = item;
+  const { children, props, skipStringEscape, type } = item;
 
   if (type === undefined) {
     throw new TypeError('Not an element definition. Missing type in: ' + JSON.stringify(item).slice(0, 50));

@@ -57,6 +57,7 @@
     "check": "run-s check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts')",
     "clean": "run-p clean:*",
+    "prepare": "husky install",
     "prepublishOnly": "run-s build",
     "test:mocha": "c8 --reporter=lcov --reporter text mocha 'test/**/*.spec.js'",
     "test-ci": "run-s test:*",
@@ -64,11 +65,6 @@
     "watch:build": "nodemon -x \"run-s build\"",
     "watch:tsd": "nodemon -e ts -x \"npx tsd\"",
     "watch": "run-p watch:*"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm test"
-    }
   },
   "dependencies": {
     "@sindresorhus/is": "^4.0.0",
@@ -101,7 +97,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-unicorn": "^41.0.1",
-    "husky": "^4.3.8",
+    "husky": "^7.0.0",
     "installed-check": "^5.0.0",
     "linemod": "^0.1.1",
     "mocha": "^8.3.2",

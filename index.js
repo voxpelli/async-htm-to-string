@@ -114,6 +114,7 @@ const omittedCloseTags = {
 
 // eslint-disable-next-line jsdoc/require-returns-check
 /**
+ * @yields {string}
  * @param {ElementProps} props
  * @returns {Generator<string>}
  */
@@ -151,6 +152,7 @@ const _renderProps = function * (props) {
 };
 
 /**
+ * @yields {string}
  * @template {ElementProps} Props
  * @param {StringRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
@@ -176,6 +178,7 @@ const _renderStringItem = async function * (item) {
 };
 
 /**
+ * @yields {string}
  * @template {ElementProps} Props
  * @param {BasicRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
@@ -204,6 +207,7 @@ const _renderElement = async function * (item) {
 };
 
 /**
+ * @yields {string}
  * @param {IterableIteratorMaybeAsync<RenderableElement>} iterator
  * @returns {AsyncIterableIterator<string>}
  */
@@ -214,6 +218,7 @@ const _renderIterable = async function * (iterator) {
 };
 
 /**
+ * @yields {string}
  * @param {RenderableElement|IterableIteratorMaybeAsync<RenderableElement>} item
  * @returns {AsyncIterableIterator<string>}
  */
@@ -234,6 +239,7 @@ const _render = async function * (item) {
 };
 
 /**
+ * @yields {string}
  * @param {HtmlMethodResult} item
  * @returns {AsyncIterableIterator<string>}
  */

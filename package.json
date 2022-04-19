@@ -96,7 +96,7 @@
     "eslint-plugin-n": "^14.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-unicorn": "^41.0.1",
     "ghat": "^0.14.0",
     "husky": "^7.0.0",

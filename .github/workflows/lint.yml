@@ -15,6 +15,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}

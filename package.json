@@ -68,7 +68,7 @@
     "watch": "run-p watch:*"
   },
   "dependencies": {
-    "@sindresorhus/is": "^4.0.0",
+    "@sindresorhus/is": "^5.0.0",
     "htm": "^3.0.4",
     "stringify-entities": "^3.1.0"
   },

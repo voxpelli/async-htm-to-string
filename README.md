@@ -11,7 +11,7 @@ Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly int
 ### Simple
 
 ```bash
-yarn add async-htm-to-string
+npm install async-htm-to-string
 ```
 
 ```javascript

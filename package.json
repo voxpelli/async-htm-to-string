@@ -17,7 +17,7 @@
     "import": "./index.mjs"
   },
   "engines": {
-    "node": "^14.17.0 || >=16.0.0"
+    "node": "^14.18.0 || >=16.0.0"
   },
   "keywords": [
     "tagged template",
@@ -100,7 +100,7 @@
     "eslint-plugin-unicorn": "^42.0.0",
     "ghat": "^0.14.0",
     "husky": "^8.0.1",
-    "installed-check": "^5.0.0",
+    "installed-check": "^6.0.0",
     "linemod": "^0.2.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.16",

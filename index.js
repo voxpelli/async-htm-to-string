@@ -112,7 +112,6 @@ const omittedCloseTags = {
  * @typedef {T[]|IterableIterator<T>|AsyncIterableIterator<T>} IterableIteratorMaybeAsync
  */
 
-// eslint-disable-next-line jsdoc/require-returns-check
 /**
  * @yields {string}
  * @param {ElementProps} props

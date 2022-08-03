@@ -4,7 +4,6 @@
 
 const htm = require('htm'); // linemod-replace-with: import htm from 'htm';
 
-const is = require('@sindresorhus/is').default; // linemod-replace-with: import is from '@sindresorhus/is';
 const escape = require('stringify-entities'); // linemod-replace-with: import escape from 'stringify-entities';
 
 // *** REACT BORROWED ***
@@ -17,6 +16,19 @@ const ATTRIBUTE_NAME_CHAR =
 const VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$');
 
 const VALID_TAG_REGEX = /^[A-Za-z][\w.:-]*$/; // Simplified subset
+
+/**
+ * @param {any} value
+ * @returns {value is Iterable<*>}
+ */
+// type-coverage:ignore-next-line
+const isIterable = (value) => Boolean(value && value[Symbol.iterator]);
+/**
+ * @param {any} value
+ * @returns {value is AsyncIterable<*>}
+ */
+// type-coverage:ignore-next-line
+const isAsyncIterable = (value) => Boolean(value && value[Symbol.asyncIterator]);
 
 /** @type {Map<string, boolean>} */
 const validatedTagCache = new Map();
@@ -228,12 +240,14 @@ const _render = async function * (item) {
     yield escape(item, { useNamedReferences: true });
   } else if (typeof item === 'number') {
     yield item + '';
-  } else if (Array.isArray(item) || is.iterable(item) || is.asyncIterable(item)) {
-    yield * _renderIterable(item);
-  } else if (typeof item === 'object') {
-    yield * _renderElement(item);
   } else {
-    throw new TypeError(`Invalid render item type: ${typeof item}`);
+    if (Array.isArray(item) || isIterable(item) || isAsyncIterable(item)) {
+      yield * _renderIterable(item);
+    } else if (typeof item === 'object') {
+      yield * _renderElement(item);
+    } else {
+      throw new TypeError(`Invalid render item type: ${typeof item}`);
+    }
   }
 };
 

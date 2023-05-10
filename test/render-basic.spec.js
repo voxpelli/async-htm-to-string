@@ -15,7 +15,7 @@ const {
 } = require('..');
 
 const {
-  ELEMENT_FIXTURE
+  ELEMENT_FIXTURE,
 } = require('./fixtures');
 
 describe('render() basic', () => {

@@ -43,10 +43,10 @@ describe('html``', () => {
               type: 'woot',
               props: {},
               children: ['YEA&H!', '<div>w0000000000t</div>'],
-            }
-          ]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     };
 
     const foo = 'woot';

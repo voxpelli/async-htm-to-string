@@ -12,7 +12,7 @@ const ATTRIBUTE_NAME_START_CHAR =
 const ATTRIBUTE_NAME_CHAR =
   ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040';
 
-// eslint-disable-next-line no-misleading-character-class,security/detect-non-literal-regexp
+// eslint-disable-next-line no-misleading-character-class
 const VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$');
 
 const VALID_TAG_REGEX = /^[A-Za-z][\w.:-]*$/; // Simplified subset
@@ -322,7 +322,7 @@ const _checkHtmlResult = (result) => {
     /** @type {BasicRenderableElement<ElementProps>} */
     // @ts-ignore
     const element = result;
-    const { type, props = {}, children = [] } = element;
+    const { children = [], props = {}, type } = element;
 
     if (typeof type === 'string' || typeof type === 'function') {
       return { type, props, children: children.flat() };

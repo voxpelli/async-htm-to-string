@@ -1,30 +1,24 @@
-/// <reference types="node" />
-/// <reference types="mocha" />
-/// <reference types="chai" />
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
-'use strict';
+import {
+  html,
+  rawHtml,
+  renderToString,
+} from '../index.js';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+import {
+  ELEMENT_FIXTURE_INVALID_TYPE,
+  ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
+} from './fixtures.js';
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 chai.should();
 
 process.on('unhandledRejection', reason => { throw reason; });
-
-const {
-  html,
-  rawHtml,
-  renderToString,
-} = require('..');
-
-const {
-  ELEMENT_FIXTURE_INVALID_TYPE,
-  ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
-} = require('./fixtures');
 
 describe('renderToString()', () => {
   afterEach(() => {
@@ -34,9 +28,9 @@ describe('renderToString()', () => {
   describe('complex', () => {
     it('should be able to render a complex example', async () => {
       const foo = 'woot';
-      /** @type {import('..').SimpleRenderableElementFunction} */
+      /** @type {import('../index.js').SimpleRenderableElementFunction} */
       const abc = (_props, children) => html`<cool>${children}</cool>`;
-      /** @type {import('..').SimpleRenderableElementFunction} */
+      /** @type {import('../index.js').SimpleRenderableElementFunction} */
       const bar = (_props, children) => html`<wowzors class="wow"><${abc}>${children}<//></wowzors>`;
       const danger = '<div>w0000000000t</div>';
       const wow = html`<div class="${['prop1', 'prop2'].join(' ')}" data-foo="123">  <img src="#" /> <${bar}>    <${foo}>YEA&H!${danger}</${foo}></${bar}></div>`;
@@ -101,7 +95,7 @@ describe('renderToString()', () => {
 
   describe('tag function', () => {
     it('should handle function tag type', async () => {
-      /** @type {import('..').SimpleRenderableElementFunction} */
+      /** @type {import('../index.js').SimpleRenderableElementFunction} */
       const foo = sinon.stub().returns(html`<abc />`);
 
       await renderToString(html`<${foo} />`)

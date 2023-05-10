@@ -1,22 +1,16 @@
-/// <reference types="node" />
-/// <reference types="mocha" />
-/// <reference types="chai" />
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-'use strict';
+import {
+  render,
+} from '../index.js';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
+import {
+  ELEMENT_FIXTURE,
+} from './fixtures.js';
 
 chai.use(chaiAsPromised);
 const should = chai.should();
-
-const {
-  render,
-} = require('..');
-
-const {
-  ELEMENT_FIXTURE,
-} = require('./fixtures');
 
 describe('render() basic', () => {
   it('should throw on no argument', async () => {

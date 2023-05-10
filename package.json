@@ -9,13 +9,9 @@
     "type": "git",
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
   },
-  "main": "index.js",
-  "module": "index.mjs",
+  "type": "module",
+  "exports": "./index.js",
   "types": "index.d.ts",
-  "exports": {
-    "require": "./index.js",
-    "import": "./index.mjs"
-  },
   "engines": {
     "node": ">=16.0.0"
   },
@@ -40,9 +36,7 @@
   ],
   "scripts": {
     "build:0": "run-s clean",
-    "build:1:declaration": "tsc -p declaration.tsconfig.json",
-    "build:1:commonjs": "linemod -e mjs index.js",
-    "build:1": "run-p build:1:*",
+    "build:1": "tsc -p declaration.tsconfig.json",
     "build": "run-s build:*",
     "check:0": "run-s clean",
     "check:1:dependency-check": "dependency-check *.js 'test/**/*.js' --no-dev -i type-fest",
@@ -52,7 +46,7 @@
     "check:1:tsc": "tsc",
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'",
     "check:1": "run-p -c --aggregate-output check:1:*",
-    "check:2": "run-s build:1:declaration",
+    "check:2": "run-s build:1",
     "check:3": "tsd",
     "check": "run-s check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts*')",
@@ -69,7 +63,7 @@
   },
   "dependencies": {
     "htm": "^3.0.4",
-    "stringify-entities": "^3.1.0"
+    "stringify-entities": "^4.0.3"
   },
   "devDependencies": {
     "@skypack/package-check": "^0.2.2",
@@ -100,7 +94,6 @@
     "ghat": "^0.14.0",
     "husky": "^8.0.3",
     "installed-check": "^7.0.0",
-    "linemod": "^0.3.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "npm-run-all2": "^6.0.5",

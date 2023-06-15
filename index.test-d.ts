@@ -14,7 +14,7 @@ import {
   RenderableElement,
   RenderableElementFunction,
   BasicRenderableElement
-} from './index.js';
+} from '.';
 
 type ExtendableRenderableElementFunction<Props extends ElementProps = ElementProps> = (props: Props, children: RenderableElement[]) => HtmlMethodResult;
 

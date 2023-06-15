@@ -1,4 +1,4 @@
 {
-  "extends": "@voxpelli/eslint-config/esm",
+  "extends": "@voxpelli",
   "root": true
 }

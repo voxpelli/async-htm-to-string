@@ -1,5 +1,10 @@
-import htm from 'htm';
-import { stringifyEntities } from 'stringify-entities';
+// @ts-check
+
+'use strict';
+
+const htm = require('htm'); // linemod-replace-with: import htm from 'htm';
+
+const escape = require('stringify-entities'); // linemod-replace-with: import escape from 'stringify-entities';
 
 // *** REACT BORROWED ***
 const ATTRIBUTE_NAME_START_CHAR =
@@ -124,7 +129,7 @@ const omittedCloseTags = {
  * @param {ElementProps} props
  * @returns {Generator<string>}
  */
-function * _renderProps (props) {
+const _renderProps = function * (props) {
   // *** REACT BORROWED https://github.com/facebook/react/blob/779a472b0901b2d28e382f3850b2ad09a555b014/packages/react-dom/src/server/DOMMarkupOperations.js#L48-L72 ***
   for (const propKey in props) {
     if (!Object.prototype.hasOwnProperty.call(props, propKey)) {
@@ -146,7 +151,7 @@ function * _renderProps (props) {
     } else if (propValue === '') {
       yield ` ${propKey}=""`;
     } else if (typeof propValue === 'string') {
-      yield ` ${propKey}="${stringifyEntities(propValue, { escapeOnly: true, useNamedReferences: true })}"`;
+      yield ` ${propKey}="${escape(propValue, { useNamedReferences: true })}"`;
     } else if (typeof propValue === 'number') {
       yield ` ${propKey}="${propValue}"`;
     } else {
@@ -155,7 +160,7 @@ function * _renderProps (props) {
     }
   }
   // *** END REACT BORROWED ***
-}
+};
 
 /**
  * @yields {string}
@@ -163,7 +168,7 @@ function * _renderProps (props) {
  * @param {StringRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
  */
-async function * _renderStringItem (item) {
+const _renderStringItem = async function * (item) {
   const { children, props, type } = item;
 
   const tag = type.toLowerCase();
@@ -181,7 +186,7 @@ async function * _renderStringItem (item) {
     yield * _render(children);
     yield `</${tag}>`;
   }
-}
+};
 
 /**
  * @yields {string}
@@ -189,7 +194,7 @@ async function * _renderStringItem (item) {
  * @param {BasicRenderableElement<Props>} item
  * @returns {AsyncIterableIterator<string>}
  */
-async function * _renderElement (item) {
+const _renderElement = async function * (item) {
   const { children, props, skipStringEscape, type } = item;
 
   if (type === undefined) {
@@ -210,29 +215,29 @@ async function * _renderElement (item) {
   } else {
     throw new TypeError(`Invalid element type: ${typeof type}`);
   }
-}
+};
 
 /**
  * @yields {string}
  * @param {IterableIteratorMaybeAsync<RenderableElement>} iterator
  * @returns {AsyncIterableIterator<string>}
  */
-async function * _renderIterable (iterator) {
+const _renderIterable = async function * (iterator) {
   for await (const item of iterator) {
     yield * _render(item);
   }
-}
+};
 
 /**
  * @yields {string}
  * @param {RenderableElement|IterableIteratorMaybeAsync<RenderableElement>} item
  * @returns {AsyncIterableIterator<string>}
  */
-async function * _render (item) {
+const _render = async function * (item) {
   if (item === undefined || item === null) {
     yield '';
   } else if (typeof item === 'string') {
-    yield stringifyEntities(item, { escapeOnly: true, useNamedReferences: true });
+    yield escape(item, { useNamedReferences: true });
   } else if (typeof item === 'number') {
     yield item + '';
   } else {
@@ -244,14 +249,14 @@ async function * _render (item) {
       throw new TypeError(`Invalid render item type: ${typeof item}`);
     }
   }
-}
+};
 
 /**
  * @yields {string}
  * @param {HtmlMethodResult} item
  * @returns {AsyncIterableIterator<string>}
  */
-export async function * render (item) {
+const render = async function * (item) { // linemod-prefix-with: export
   if (item === undefined) throw new TypeError('Expected an argument');
   if (!item) throw new TypeError(`Expected a non-falsy argument, got: ${item}`);
   if (Array.isArray(item)) {
@@ -263,27 +268,25 @@ export async function * render (item) {
   } else {
     throw new TypeError(`Expected a string or an object, got: ${typeof item}`);
   }
-}
+};
 
 /**
  * @param {IterableIteratorMaybeAsync<string>} generator
  * @returns {Promise<string>}
  */
-export async function generatorToString (generator) {
+const generatorToString = async (generator) => { // linemod-prefix-with: export
   let result = '';
   for await (const item of generator) {
     result += item;
   }
   return result;
-}
+};
 
 /**
  * @param {HtmlMethodResult} item
  * @returns {Promise<string>}
  */
-export async function renderToString (item) {
-  return generatorToString(render(item));
-}
+const renderToString = async (item) => generatorToString(render(item)); // linemod-prefix-with: export
 
 /**
  * @template {ElementProps} T
@@ -292,9 +295,9 @@ export async function renderToString (item) {
  * @param  {...RenderableElement} children
  * @returns {BasicRenderableElement<T>}
  */
-export function h (type, props, ...children) {
+const h = (type, props, ...children) => { // linemod-prefix-with: export
   return { type, props: props || {}, children };
-}
+};
 
 /** @type {(strings: TemplateStringsArray, ...values: Array<ElementPropsValue|ElementProps|RenderableElementFunction<any>|RenderableElement|RenderableElement[]>) => unknown} */
 const _internalHtml =
@@ -305,7 +308,7 @@ const _internalHtml =
  * @param {unknown} result
  * @returns {BasicRenderableElement<ElementProps>|string}
  */
-function _checkHtmlResult (result) {
+const _checkHtmlResult = (result) => {
   if (typeof result === 'number') {
     return result + '';
   } else if (!result) {
@@ -329,14 +332,14 @@ function _checkHtmlResult (result) {
   } else {
     throw new TypeError(`Resolved to invalid value type: ${typeof result}`);
   }
-}
+};
 
 /**
  * @param {TemplateStringsArray} strings
  * @param  {...ElementPropsValue|ElementProps|RenderableElementFunction<any>|RenderableElement|RenderableElement[]} values
  * @returns {HtmlMethodResult}
  */
-export function html (strings, ...values) {
+const html = (strings, ...values) => { // linemod-prefix-with: export
   const result = _internalHtml(strings, ...values);
 
   if (!Array.isArray(result)) return _checkHtmlResult(result);
@@ -345,15 +348,24 @@ export function html (strings, ...values) {
   const unknownArray = result;
 
   return unknownArray.map(item => _checkHtmlResult(item));
-}
+};
 
 /**
  * @param {TemplateStringsArray|string} strings
  * @param  {...(string|number)} values
  * @returns {BasicRenderableElement<{}>}
  */
-export function rawHtml (strings, ...values) {
+const rawHtml = (strings, ...values) => { // linemod-prefix-with: export
   /** @type {RenderableElementFunction<{}>} */
   const type = () => typeof strings === 'string' ? strings : String.raw(strings, ...values);
   return { type, props: {}, children: [], skipStringEscape: true };
-}
+};
+
+module.exports = {   // linemod-remove
+  generatorToString, // linemod-remove
+  html,              // linemod-remove
+  h,                 // linemod-remove
+  rawHtml,           // linemod-remove
+  render,            // linemod-remove
+  renderToString,    // linemod-remove
+};                   // linemod-remove

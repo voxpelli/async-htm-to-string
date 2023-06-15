@@ -4,7 +4,7 @@ Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly int
 
 [![npm version](https://img.shields.io/npm/v/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
 [![npm downloads](https://img.shields.io/npm/dm/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
-[![Module type: ESM](https://img.shields.io/badge/module%20type-esm-brightgreen)](https://github.com/voxpelli/badges-cjs-esm)
+[![Module type: CJS+ESM](https://img.shields.io/badge/module%20type-cjs%2Besm-brightgreen)](https://github.com/voxpelli/badges-cjs-esm)
 [![Types in JS](https://img.shields.io/badge/types_in_js-yes-brightgreen)](https://github.com/voxpelli/types-in-js)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg)](https://github.com/voxpelli/eslint-config)
 [![Follow @voxpelli@mastodon.social](https://img.shields.io/mastodon/follow/109247025527949675?domain=https%3A%2F%2Fmastodon.social&style=social)](https://mastodon.social/@voxpelli)
@@ -18,7 +18,7 @@ npm install async-htm-to-string
 ```
 
 ```javascript
-import { html, renderToString } from 'async-htm-to-string';
+const { html, renderToString } = require('async-htm-to-string');
 
 const customTag = ({ prefix }, children) => html`<div>${prefix}-${children}</div>`;
 const dynamicContent = 'bar';

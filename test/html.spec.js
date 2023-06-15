@@ -1,26 +1,32 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+/// <reference types="node" />
+/// <reference types="mocha" />
+/// <reference types="chai" />
 
-import {
-  html,
-} from '../index.js';
+'use strict';
 
-import {
-  ELEMENT_ARRAY_CHILD_FIXTURE,
-  ELEMENT_FIXTURE,
-} from './fixtures.js';
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 const should = chai.should();
 
+const {
+  html,
+} = require('..');
+
+const {
+  ELEMENT_ARRAY_CHILD_FIXTURE,
+  ELEMENT_FIXTURE,
+} = require('./fixtures');
+
 describe('html``', () => {
   it('should handle complex example', () => {
-    /** @type {import('../index.js').SimpleRenderableElementFunction} */
+    /** @type {import('..').SimpleRenderableElementFunction} */
     const abc = (_props, children) => html`<cool>${children}</cool>`;
-    /** @type {import('../index.js').SimpleRenderableElementFunction} */
+    /** @type {import('..').SimpleRenderableElementFunction} */
     const bar = (_props, children) => html`<wowzors class="wow"><${abc}>${children}<//></wowzors>`;
 
-    /** @type {import('../index.js').HtmlMethodResult} */
+    /** @type {import('..').HtmlMethodResult} */
     const fixture = {
       type: 'div',
       props: { 'class': 'prop1 prop2', 'data-foo': '123' },
@@ -69,7 +75,7 @@ describe('html``', () => {
   });
 
   it('should handle multi root example', () => {
-    /** @type {import('../index.js').HtmlMethodResult} */
+    /** @type {import('..').HtmlMethodResult} */
     const fixture = [
       { type: 'div', props: {}, children: [] },
       { type: 'div', props: {}, children: [] },
@@ -79,13 +85,13 @@ describe('html``', () => {
   });
 
   it('should handle text root example', () => {
-    /** @type {import('../index.js').HtmlMethodResult} */
+    /** @type {import('..').HtmlMethodResult} */
     const fixture = 'foo';
     html`foo`.should.deep.equal(fixture);
   });
 
   it('should handle combined root example', () => {
-    /** @type {import('../index.js').HtmlMethodResult} */
+    /** @type {import('..').HtmlMethodResult} */
     const fixture = [
       { type: 'div', props: {}, children: [] },
       'foo',
@@ -94,7 +100,7 @@ describe('html``', () => {
   });
 
   it('should handle multi text root example', () => {
-    /** @type {import('../index.js').HtmlMethodResult} */
+    /** @type {import('..').HtmlMethodResult} */
     const fixture = ['foo', 'bar'];
     html`${'foo'}bar`.should.deep.equal(fixture);
   });

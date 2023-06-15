@@ -9,9 +9,13 @@
     "type": "git",
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
   },
-  "type": "module",
-  "exports": "./index.js",
+  "main": "index.js",
+  "module": "index.mjs",
   "types": "index.d.ts",
+  "exports": {
+    "require": "./index.js",
+    "import": "./index.mjs"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
@@ -36,7 +40,9 @@
   ],
   "scripts": {
     "build:0": "run-s clean",
-    "build:1": "tsc -p declaration.tsconfig.json",
+    "build:1:declaration": "tsc -p declaration.tsconfig.json",
+    "build:1:commonjs": "linemod -e mjs index.js",
+    "build:1": "run-p build:1:*",
     "build": "run-s build:*",
     "check:0": "run-s clean",
     "check:1:installed-check": "installed-check -i eslint-plugin-jsdoc -i knip",
@@ -46,7 +52,7 @@
     "check:1:tsc": "tsc",
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'",
     "check:1": "run-p check:1:*",
-    "check:2": "run-s build:1",
+    "check:2": "run-s build:1:declaration",
     "check:3": "tsd",
     "check": "run-s check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts*')",
@@ -62,7 +68,7 @@
   },
   "dependencies": {
     "htm": "^3.0.4",
-    "stringify-entities": "^4.0.3"
+    "stringify-entities": "^3.1.0"
   },
   "devDependencies": {
     "@skypack/package-check": "^0.2.2",
@@ -90,6 +96,7 @@
     "husky": "^8.0.3",
     "installed-check": "^7.1.1",
     "knip": "^2.13.0",
+    "linemod": "^0.3.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "npm-run-all2": "^6.0.5",

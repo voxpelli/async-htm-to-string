@@ -60,7 +60,7 @@
     "check:1:tsc": "tsc",
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'",
     "check:1": "run-p check:1:*",
-    "check:2": "run-s build:2-declaration",
+    "check:2": "run-s build",
     "check:3": "tsd",
     "check": "run-s check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts*')",

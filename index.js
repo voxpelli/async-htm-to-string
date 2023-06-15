@@ -4,7 +4,7 @@
 
 const htm = require('htm'); // linemod-replace-with: import htm from 'htm';
 
-const escape = require('stringify-entities'); // linemod-replace-with: import escape from 'stringify-entities';
+// linemod-add: import { stringifyEntities } from 'stringify-entities';
 
 // *** REACT BORROWED ***
 const ATTRIBUTE_NAME_START_CHAR =
@@ -127,9 +127,11 @@ const omittedCloseTags = {
 /**
  * @yields {string}
  * @param {ElementProps} props
- * @returns {Generator<string>}
+ * @returns {AsyncIterableIterator<string>}
  */
-const _renderProps = function * (props) {
+const _renderProps = async function * (props) {
+  const { stringifyEntities } = await import('stringify-entities'); // linemod-remove
+
   // *** REACT BORROWED https://github.com/facebook/react/blob/779a472b0901b2d28e382f3850b2ad09a555b014/packages/react-dom/src/server/DOMMarkupOperations.js#L48-L72 ***
   for (const propKey in props) {
     if (!Object.prototype.hasOwnProperty.call(props, propKey)) {
@@ -151,7 +153,7 @@ const _renderProps = function * (props) {
     } else if (propValue === '') {
       yield ` ${propKey}=""`;
     } else if (typeof propValue === 'string') {
-      yield ` ${propKey}="${escape(propValue, { useNamedReferences: true })}"`;
+      yield ` ${propKey}="${stringifyEntities(propValue, { escapeOnly: true, useNamedReferences: true })}"`;
     } else if (typeof propValue === 'number') {
       yield ` ${propKey}="${propValue}"`;
     } else {
@@ -234,10 +236,12 @@ const _renderIterable = async function * (iterator) {
  * @returns {AsyncIterableIterator<string>}
  */
 const _render = async function * (item) {
+  const { stringifyEntities } = await import('stringify-entities'); // linemod-remove
+
   if (item === undefined || item === null) {
     yield '';
   } else if (typeof item === 'string') {
-    yield escape(item, { useNamedReferences: true });
+    yield stringifyEntities(item, { escapeOnly: true, useNamedReferences: true });
   } else if (typeof item === 'number') {
     yield item + '';
   } else {

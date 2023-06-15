@@ -45,7 +45,7 @@
     "build:1": "run-p build:1:*",
     "build": "run-s build:*",
     "check:0": "run-s clean",
-    "check:1:installed-check": "installed-check -i eslint-plugin-jsdoc -i knip",
+    "check:1:installed-check": "installed-check -i eslint-plugin-jsdoc -i knip -i linemod",
     "check:1:knip": "knip",
     "check:1:lint": "eslint --report-unused-disable-directives .",
     "check:1:skypack": "package-check",
@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "htm": "^3.0.4",
-    "stringify-entities": "^3.1.0"
+    "stringify-entities": "^4.0.3"
   },
   "devDependencies": {
     "@skypack/package-check": "^0.2.2",
@@ -96,7 +96,7 @@
     "husky": "^8.0.3",
     "installed-check": "^7.1.1",
     "knip": "^2.13.0",
-    "linemod": "^0.3.0",
+    "linemod": "^1.1.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
     "npm-run-all2": "^6.0.5",

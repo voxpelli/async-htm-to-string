@@ -10,11 +10,18 @@
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
   },
   "main": "index.js",
-  "module": "index.mjs",
   "types": "index.d.ts",
   "exports": {
-    "require": "./index.js",
-    "import": "./index.mjs"
+    ".": {
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./index.mjs"
+      },
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./index.js"
+      }
+    }
   },
   "engines": {
     "node": ">=16.0.0"
@@ -33,16 +40,17 @@
     "ssr"
   ],
   "files": [
-    "index.js",
-    "index.mjs",
+    "index.d.mts.map",
+    "index.d.mts",
+    "index.d.ts.map",
     "index.d.ts",
-    "index.d.ts.map"
+    "index.js",
+    "index.mjs"
   ],
   "scripts": {
-    "build:0": "run-s clean",
-    "build:1:declaration": "tsc -p declaration.tsconfig.json",
-    "build:1:commonjs": "linemod -e mjs index.js",
-    "build:1": "run-p build:1:*",
+    "build:0-clean": "run-s clean",
+    "build:1-esm": "linemod -e mjs index.js",
+    "build:2-declaration": "tsc -p declaration.tsconfig.json",
     "build": "run-s build:*",
     "check:0": "run-s clean",
     "check:1:installed-check": "installed-check -i eslint-plugin-jsdoc -i knip -i linemod",
@@ -52,10 +60,11 @@
     "check:1:tsc": "tsc",
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'",
     "check:1": "run-p check:1:*",
-    "check:2": "run-s build:1:declaration",
+    "check:2": "run-s build:2-declaration",
     "check:3": "tsd",
     "check": "run-s check:*",
     "clean:declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.ts*')",
+    "clean:esm-declarations": "rm -rf $(find . -maxdepth 2 -type f -name '*.d.mts*')",
     "clean": "run-p clean:*",
     "prepare": "husky install",
     "prepublishOnly": "run-s build",

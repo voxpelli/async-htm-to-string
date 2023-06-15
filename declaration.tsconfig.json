@@ -1,6 +1,10 @@
 
 {
   "extends": "./tsconfig",
+  "files": [
+    "index.mjs",
+    "index.js"
+  ],
   "exclude": [
     "test/**/*.js"
   ],

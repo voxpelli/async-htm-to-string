@@ -104,7 +104,7 @@
     "eslint-plugin-unicorn": "^47.0.0",
     "husky": "^8.0.3",
     "installed-check": "^7.1.1",
-    "knip": "^2.13.0",
+    "knip": "^2.40.0",
     "linemod": "^1.1.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.22",

@@ -106,11 +106,15 @@ describe('html``', () => {
   });
 
   it('should handle number root value', () => { html`${123}`.should.equal('123'); });
+
   it('should handle undefined root example', () => { html`${undefined}`.should.equal(''); });
+
   // @ts-ignore
   // eslint-disable-next-line unicorn/no-null
   it('should handle null root example', () => { html`${null}`.should.equal(''); });
+
   it('should handle false root example', () => { html`${false}`.should.equal(''); });
+
   it('should handle 0 root example', () => { html`${0}`.should.equal('0'); });
 
   it('should throw on invalid root type', () => {

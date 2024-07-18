@@ -1,9 +1,12 @@
+/* eslint-disable unicorn/no-null */
+
 import {
   expectAssignable,
   expectNotAssignable,
   expectError,
-  expectType
+  expectType,
 } from 'tsd';
+
 import {
   html,
   h,
@@ -13,7 +16,7 @@ import {
   HtmlMethodResult,
   RenderableElement,
   RenderableElementFunction,
-  BasicRenderableElement
+  BasicRenderableElement,
 } from '.';
 
 type ExtendableRenderableElementFunction<Props extends ElementProps = ElementProps> = (props: Props, children: RenderableElement[]) => HtmlMethodResult;
@@ -36,7 +39,7 @@ for (const item of invalidValues) {
 expectAssignable<HtmlMethodResult>('foo');
 expectAssignable<HtmlMethodResult>({ type: 'div', props: {}, children: [] });
 expectAssignable<HtmlMethodResult>('');
-expectAssignable<HtmlMethodResult>([ { type: 'div', props: {}, children: [] }, 'foo' ]);
+expectAssignable<HtmlMethodResult>([{ type: 'div', props: {}, children: [] }, 'foo']);
 
 expectType<HtmlMethodResult>(html`<div />`);
 
@@ -54,7 +57,7 @@ expectAssignable<RenderableElementFunction<any>>(customPropsElem2);
 expectType<HtmlMethodResult>(html`<wowzors class="wow"><${customPropsElem} foo=${123} /></wowzors>`);
 expectType<HtmlMethodResult>(html`<wowzors class="wow"><${customPropsElem2} foo=${{ key: true }} /></wowzors>`);
 
-expectError(h(abc, { foo: null }))
+expectError(h(abc, { foo: null }));
 expectError(h(customPropsElem, { yay: 123 }));
 expectError(h(customPropsElem2, { foo: 123 }));
 
@@ -80,10 +83,10 @@ const complexElementTree: HtmlMethodResult = {
           type: 'woot',
           props: {},
           children: ['YEA&H!', '<div>w0000000000t</div>'],
-        }
-      ]
-    }
-  ]
+        },
+      ],
+    },
+  ],
 };
 
 expectAssignable<HtmlMethodResult>(complexElementTree);

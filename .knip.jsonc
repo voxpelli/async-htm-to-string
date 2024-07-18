@@ -1,5 +1,4 @@
 {
-  "$schema": "https://unpkg.com/knip@2/schema.json",
-  "ignore": ["index.test-d.ts"],
-  "ignoreDependencies": ["@types/mocha"]
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["index.test-d.ts"]
 }

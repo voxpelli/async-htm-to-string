@@ -24,7 +24,7 @@
     }
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
   },
   "keywords": [
     "tagged template",
@@ -53,7 +53,7 @@
     "build:2-declaration": "tsc -p declaration.tsconfig.json",
     "build": "run-s build:*",
     "check:0": "run-s clean",
-    "check:1:installed-check": "installed-check -i eslint-plugin-jsdoc -i knip -i linemod",
+    "check:1:installed-check": "installed-check",
     "check:1:knip": "knip",
     "check:1:lint": "eslint --report-unused-disable-directives .",
     "check:1:skypack": "package-check",
@@ -84,7 +84,7 @@
     "@types/chai": "^4.3.5",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^16.18.36",
+    "@types/node": "^18.19.40",
     "@types/sinon": "^10.0.15",
     "@types/sinon-chai": "^3.2.9",
     "@voxpelli/eslint-config": "^20.0.0",

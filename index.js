@@ -65,7 +65,7 @@ const isAttributeNameValid = (name) => {
   return result;
 };
 
-const omittedCloseTags = {
+const omittedCloseTags = /** @type {const} */ ({
   area: true,
   base: true,
   br: true,
@@ -81,7 +81,7 @@ const omittedCloseTags = {
   source: true,
   track: true,
   wbr: true,
-};
+});
 // *** END REACT BORROWED ***
 
 /**
@@ -137,7 +137,7 @@ const _renderProps = async function * (props) {
 
   // *** REACT BORROWED https://github.com/facebook/react/blob/779a472b0901b2d28e382f3850b2ad09a555b014/packages/react-dom/src/server/DOMMarkupOperations.js#L48-L72 ***
   for (const propKey in props) {
-    if (!Object.prototype.hasOwnProperty.call(props, propKey)) {
+    if (!Object.hasOwn(props, propKey)) {
       continue;
     }
 
@@ -178,7 +178,7 @@ const _renderStringItem = async function * (item) {
 
   const tag = type.toLowerCase();
 
-  if (Object.prototype.hasOwnProperty.call(omittedCloseTags, type)) {
+  if (type in omittedCloseTags) {
     yield `<${tag}`;
     yield * _renderProps(props);
     yield ' />';

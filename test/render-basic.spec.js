@@ -12,7 +12,7 @@ const should = chai.should();
 
 const {
   render,
-} = require('..');
+} = require('../lib/render');
 
 const {
   ELEMENT_FIXTURE,

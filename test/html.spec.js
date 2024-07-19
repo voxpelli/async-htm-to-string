@@ -12,7 +12,7 @@ const should = chai.should();
 
 const {
   html,
-} = require('..');
+} = require('../lib/htm');
 
 const {
   ELEMENT_ARRAY_CHILD_FIXTURE,

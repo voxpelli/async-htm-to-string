@@ -1,9 +1,11 @@
 {
   "extends": "@voxpelli/tsconfig/node18.json",
   "files": [
-    "index.js"
+    "index.js",
+    "index.mjs"
   ],
   "include": [
+    "lib/**/*",
     "test/**/*.js"
   ]
 }

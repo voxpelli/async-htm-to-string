@@ -18,17 +18,20 @@ const VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + ATTRIBUTE_NAME_START_CHAR +
 const VALID_TAG_REGEX = /^[A-Za-z][\w.:-]*$/; // Simplified subset
 
 /**
- * @param {any} value
- * @returns {value is Iterable<*>}
+ * @param {unknown} value
+ * @returns {value is object}
  */
-// type-coverage:ignore-next-line
-const isIterable = (value) => Boolean(value && value[Symbol.iterator]);
+const isObject = (value) => typeof value === 'object' && value !== null;
 /**
- * @param {any} value
- * @returns {value is AsyncIterable<*>}
+ * @param {unknown} value
+ * @returns {value is Iterable<unknown>}
  */
-// type-coverage:ignore-next-line
-const isAsyncIterable = (value) => Boolean(value && value[Symbol.asyncIterator]);
+const isIterable = (value) => isObject(value) && Symbol.iterator in value;
+/**
+ * @param {unknown} value
+ * @returns {value is AsyncIterable<unknown>}
+ */
+const isAsyncIterable = (value) => isObject(value) && Symbol.asyncIterator in value;
 
 /** @type {Map<string, boolean>} */
 const validatedTagCache = new Map();

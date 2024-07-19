@@ -4,6 +4,7 @@
 
 const htm = require('htm'); // linemod-replace-with: import htm from 'htm';
 
+// linemod-add: import { bufferedAsyncMap } from 'buffered-async-iterable';
 // linemod-add: import { stringifyEntities } from 'stringify-entities';
 
 // *** REACT BORROWED ***
@@ -92,6 +93,7 @@ const omittedCloseTags = /** @type {const} */ ({
 /** @typedef {undefined|boolean|string|number|any[]|Record<string,any>|Set<any>|Map<any,any>} ElementPropsValue */
 /** @typedef {{ [key: string]: ElementPropsValue }} ElementProps */
 
+// TODO: Where is the asyncness here?!
 /**
  * @template {ElementProps} Props
  * @callback RenderableElementFunction
@@ -110,6 +112,7 @@ const omittedCloseTags = /** @type {const} */ ({
  * @property {RenderableElement[]} children
  */
 
+// TODO: Where is the asyncness here?!
 /**
  * @template {ElementProps} Props
  * @typedef BasicRenderableElement
@@ -120,6 +123,7 @@ const omittedCloseTags = /** @type {const} */ ({
  */
 
 /** @typedef {string|number|BasicRenderableElement<any>} RenderableElement */
+// TODO: Where is the asyncness here?!
 /** @typedef {MaybeArray<BasicRenderableElement<ElementProps>|string>} HtmlMethodResult */
 
 /**
@@ -207,6 +211,7 @@ const _renderElement = async function * (item) {
   } else if (type === '') {
     yield * _render(children);
   } else if (typeof type === 'function') {
+    // TODO: Why can't this be async?
     const result = type(props, children);
     if (!skipStringEscape) {
       yield * _render(result);
@@ -228,9 +233,12 @@ const _renderElement = async function * (item) {
  * @returns {AsyncIterableIterator<string>}
  */
 const _renderIterable = async function * (iterator) {
-  for await (const item of iterator) {
+  const { bufferedAsyncMap } = await import('buffered-async-iterable'); // linemod-remove
+  yield * bufferedAsyncMap(iterator, async function * (item) {
     yield * _render(item);
-  }
+  }, {
+    ordered: true,
+  });
 };
 
 /**

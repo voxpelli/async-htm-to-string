@@ -16,3 +16,6 @@ permissions:
 jobs:
   lint:
     uses: voxpelli/ghatemplates/.github/workflows/lint.yml@main
+  types:
+    needs: [lint]
+    uses: ./.github/workflows/types.yml

@@ -76,6 +76,7 @@
     "watch": "run-p watch:*"
   },
   "dependencies": {
+    "buffered-async-iterable": "^1.0.1",
     "htm": "^3.0.4",
     "stringify-entities": "^4.0.3"
   },

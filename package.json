@@ -58,6 +58,7 @@
     "build:1-esm": "linemod -e mjs lib/render.js",
     "build:2-declaration": "tsc -p declaration.tsconfig.json",
     "build": "run-s build:*",
+    "build-for-test": "run-s build:1-esm",
     "check:0": "run-s clean build:1-esm",
     "check:1:installed-check": "installed-check",
     "check:1:knip": "knip",

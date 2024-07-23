@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.2](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.1...v3.0.2) (2024-07-23)
+
+
+### 🧹 Chores
+
+* **deps:** update dev dependencies ([668f437](https://github.com/voxpelli/async-htm-to-string/commit/668f437ab14907143619c7711300d68f299587cb))
+* fix failing voxpelli/tsconfig integration ([2a3b9f3](https://github.com/voxpelli/async-htm-to-string/commit/2a3b9f3845fe67ed44d27bccce0eb7bd8e0f9415))
+
 ## [3.0.1](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.0...v3.0.1) (2024-07-19)
 
 

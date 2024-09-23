@@ -105,7 +105,7 @@
     "eslint": "^9.11.0",
     "husky": "^9.1.6",
     "installed-check": "^9.3.0",
-    "knip": "^5.30.4",
+    "knip": "^5.30.5",
     "linemod": "^2.0.1",
     "mocha": "^10.7.3",
     "nodemon": "^3.1.7",

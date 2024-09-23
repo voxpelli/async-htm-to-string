@@ -14,5 +14,5 @@ jobs:
     uses: voxpelli/ghatemplates/.github/workflows/type-check.yml@main
     with:
       ts-prebuild-script: 'build'
-      ts-versions: ${{ github.event.schedule && 'next' || '5.5,next' }}
+      ts-versions: ${{ github.event.schedule && 'next' || '5.6,next' }}
       ts-libs: 'es2022;esnext'

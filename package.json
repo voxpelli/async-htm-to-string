@@ -110,7 +110,7 @@
     "mocha": "^10.7.3",
     "nodemon": "^3.1.7",
     "npm-run-all2": "^6.2.3",
-    "sinon": "^18.0.1",
+    "sinon": "^19.0.2",
     "sinon-chai": "^3.7.0",
     "tsd": "^0.31.2",
     "type-coverage": "^2.29.1",

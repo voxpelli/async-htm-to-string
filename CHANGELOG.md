@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.2](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.1...v3.0.2) (2024-10-02)
+
+
+### 🩹 Fixes
+
+* handle nested array values ([a469cdf](https://github.com/voxpelli/async-htm-to-string/commit/a469cdff7db27600cb4534a239ba40fbd3eab79b))
+
+
+### 🧹 Chores
+
+* **deps:** update dependency sinon to v19 ([#100](https://github.com/voxpelli/async-htm-to-string/issues/100)) ([0f5c1b6](https://github.com/voxpelli/async-htm-to-string/commit/0f5c1b6ce661af044e3ff200f5ce48da85dcc6d6))
+* **deps:** update dev dependencies ([6bd5be8](https://github.com/voxpelli/async-htm-to-string/commit/6bd5be8d20d1e3496fe396eef4fb977bd5ce5b13))
+* **deps:** update dev dependencies ([13de112](https://github.com/voxpelli/async-htm-to-string/commit/13de112b2383223d2e900f595cbbd56cd07a8796))
+* **deps:** update dev dependencies ([668f437](https://github.com/voxpelli/async-htm-to-string/commit/668f437ab14907143619c7711300d68f299587cb))
+* fix failing voxpelli/tsconfig integration ([2a3b9f3](https://github.com/voxpelli/async-htm-to-string/commit/2a3b9f3845fe67ed44d27bccce0eb7bd8e0f9415))
+
 ## [3.0.1](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.0...v3.0.1) (2024-07-19)
 
 

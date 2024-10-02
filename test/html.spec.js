@@ -117,6 +117,22 @@ describe('html``', () => {
 
   it('should handle 0 root example', () => { html`${0}`.should.equal('0'); });
 
+  it('should handle top level array content', () => {
+    /** @type {import('..').HtmlMethodResult} */
+    const fixture1 = [
+      { type: 'div', props: {}, children: [] },
+      { type: 'div', props: {}, children: [] },
+    ];
+
+    /** @type {import('..').HtmlMethodResult} */
+    const fixture2 = [
+      ...fixture1,
+      { type: 'span', props: {}, children: [] },
+    ];
+
+    html`${fixture1}<span />`.should.deep.equal(fixture2);
+  });
+
   it('should throw on invalid root type', () => {
     should.Throw(() => { html`${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
     should.Throw(() => { html`${{}}`; }, TypeError, 'Resolved to invalid type of object value "type" property: undefined');
@@ -134,6 +150,5 @@ describe('html``', () => {
     should.Throw(() => { html`foo${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
     // @ts-ignore
     should.Throw(() => { html`foo${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
-    should.Throw(() => { html`foo${['foo']}`; }, TypeError, 'Unexpected nested array value found');
   });
 });

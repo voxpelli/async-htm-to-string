@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.3](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.2...v3.0.3) (2024-10-24)
+
+
+### 🧹 Chores
+
+* **deps:** update dev dependencies ([0b558b1](https://github.com/voxpelli/async-htm-to-string/commit/0b558b1ba651cdeaee0db7be2fb1ee1d40642f51))
+
 ## [3.0.2](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.1...v3.0.2) (2024-10-02)
 
 

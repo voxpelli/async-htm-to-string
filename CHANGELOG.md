@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/voxpelli/async-htm-to-string/compare/v4.0.0...v4.0.1) (2026-01-30)
+
+
+### 🧹 Chores
+
+* add DeepWiki badge to README ([06f37e4](https://github.com/voxpelli/async-htm-to-string/commit/06f37e4c9bb78099a32f35264b660f12ea1540cd))
+
 ## [4.0.0](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.2...v4.0.0) (2026-01-30)
 
 

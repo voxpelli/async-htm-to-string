@@ -1,4 +1,4 @@
-import type { MaybeArray } from './util-types.d.ts';
+import type { MaybeArray, MaybePromised } from './util-types.d.ts';
 
 export type ElementPropsValue =
   undefined |
@@ -18,7 +18,7 @@ export type ElementProps = {
 export type RenderableElement = string | number | BasicRenderableElement<any>;
 
 // TODO: Where is the asyncness here?!
-export type HtmlMethodResult = MaybeArray<BasicRenderableElement<ElementProps> | string>;
+export type HtmlMethodResult = MaybePromised<MaybeArray<MaybePromised<BasicRenderableElement<ElementProps> | string>>>;
 
 // TODO: Where is the asyncness here?!
 export type RenderableElementFunction<Props extends ElementProps> = (props: Props, children: RenderableElement[]) => HtmlMethodResult;

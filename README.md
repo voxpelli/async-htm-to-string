@@ -22,8 +22,30 @@ const { html, renderToString } = require('async-htm-to-string');
 
 const customTag = ({ prefix }, children) => html`<div>${prefix}-${children}</div>`;
 const dynamicContent = 'bar';
-// Will equal "<div>foo-bar</div>
+// Will equal "<div>foo-bar</div>"
 const result = await renderToString(html`<${customTag} prefix="foo">${dynamicContent}</${customTag}>`);
+```
+
+### Async Support
+
+The library has full support for async values:
+
+* **Async Components:** Components can be `async` functions
+* **Async Children:** Children can be `Promise`s or arrays of `Promise`s
+* **Deeply Nested:** Resolved values are recursively processed
+* **Concurrency:** Uses [`buffered-async-iterable`](https://www.npmjs.com/package/buffered-async-iterable) to process async arrays concurrently while maintaining order
+
+```javascript
+const AsyncComponent = async ({ id }) => {
+  const data = await fetchData(id);
+  return html`<div>${data}</div>`;
+};
+
+// <AsyncComponent /> will be awaited and rendered
+const result = await renderToString(html`
+  <${AsyncComponent} id="123" />
+  ${Promise.resolve('Async child')}
+`);
 ```
 
 ## API

@@ -1,10 +1,10 @@
-# Vendored htm - Changes from Original
+# @voxpelli/htm-improved - Changes from Original htm
 
 This document fulfills the Apache License 2.0 Section 4(b) requirement to
 "cause any modified files to carry prominent notices stating that You changed
 the files."
 
-This document lists all changes made to htm v3.1.1 when vendoring it into async-htm-to-string.
+This document lists all changes made to htm v3.1.1 in this improved fork.
 
 ## Source Version
 

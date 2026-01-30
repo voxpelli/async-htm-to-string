@@ -1,6 +1,6 @@
 # async-htm-to-string
 
-Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly into a string.
+Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly into a string. Uses [`@voxpelli/htm-improved`](./packages/htm-improved/) - an improved fork of htm with security fixes and JSDoc types.
 
 [![npm version](https://img.shields.io/npm/v/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
 [![npm downloads](https://img.shields.io/npm/dm/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
@@ -94,15 +94,17 @@ Same as `render()`, but asyncly returns a single string with the fully rendered 
 
 Asyncly loops over an iterable (like eg. an async iterable) and concatenates together the result into a single string that it resolves to. The brains behind `renderToString()`.
 
+## Monorepo Structure
+
+This project is a monorepo containing:
+
+| Package | Description | License |
+|---------|-------------|---------|
+| `async-htm-to-string` (root) | Main package - async htm rendering | [0BSD](LICENSE) |
+| [`@voxpelli/htm-improved`](./packages/htm-improved/) | Improved fork of htm | [Apache-2.0](./packages/htm-improved/LICENSE) |
+
 ## License
 
-**SPDX: `(0BSD AND Apache-2.0)`**
+**0BSD** ([BSD Zero Clause License](https://spdx.org/licenses/0BSD.html)) - essentially public domain.
 
-This project uses a dual-license structure:
-
-* **Main code** ([`LICENSE`](LICENSE)): [0BSD](https://spdx.org/licenses/0BSD.html) (BSD Zero Clause License) - essentially public domain
-* **Vendored htm** ([`lib/vendor/htm-LICENSE`](lib/vendor/htm-LICENSE)): [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html)
-
-The [htm](https://github.com/developit/htm) library (Copyright 2018 Google Inc.) is vendored in `lib/vendor/` with modifications documented in [`lib/vendor/htm-CHANGES.md`](lib/vendor/htm-CHANGES.md). The Apache 2.0 license applies to this vendored code.
-
-For most use cases, you can treat this package as permissively licensed. The Apache 2.0 portions require attribution if you redistribute the source code.
+The [`@voxpelli/htm-improved`](./packages/htm-improved/) dependency (an improved fork of [htm](https://github.com/developit/htm)) is licensed under [Apache-2.0](./packages/htm-improved/LICENSE). See that package's [CHANGES.md](./packages/htm-improved/CHANGES.md) for modifications from the original.

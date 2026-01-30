@@ -1,22 +1,18 @@
 /**
- * htm v3.1.1 - Hyperscript Tagged Markup
- * https://github.com/developit/htm
+ * Improved fork of htm with JSDoc types, security fixes, and better caching.
  *
- * Copyright 2018 Google Inc.
- * Licensed under the Apache License, Version 2.0
- * See ./htm-LICENSE for full license text
+ * Based on htm v3.1.1 - Hyperscript Tagged Markup (https://github.com/developit/htm)
+ * Original work Copyright 2018 Google Inc.
+ * Modifications Copyright 2026 Pelle Wessman
+ * Licensed under the Apache License, Version 2.0 - See ./LICENSE for full text
+ * See ./CHANGES.md for detailed list of modifications from original.
  *
- * Vendored into async-htm-to-string for maintenance stability.
- * Converted to JSDoc typing and neostandard formatting.
- *
- * See ./htm-CHANGES.md for detailed list of modifications from original.
- *
- * @module lib/vendor/htm
+ * @module @voxpelli/htm-improved
  */
 
 'use strict';
 
-/** @import { HFunction, BuiltTemplate, BoundHtm } from './htm-types.d.ts' */
+/** @import { HFunction, BuiltTemplate, BoundHtm } from '../index.d.ts' */
 
 // ============================================================================
 // Parser Mode Constants
@@ -141,7 +137,7 @@ const PROP_APPEND = MODE_PROP_APPEND;
  * @param {HFunction} h - The hyperscript function to call for each element
  * @param {BuiltTemplate} built - The built instruction list from `build()`
  * @param {ArrayLike<unknown>} fields - The interpolated values from the template literal
- * @param {unknown[]} args - Accumulator for h() arguments. Empty for top-level, ['', undefined] for recursive calls
+ * @param {unknown[]} args - Accumulator for h() arguments. Empty for top-level, ['', null] for recursive calls
  * @returns {unknown[]} The evaluated arguments array containing element results
  */
 const evaluate = (h, built, fields, args) => {

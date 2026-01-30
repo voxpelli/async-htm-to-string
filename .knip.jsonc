@@ -1,4 +1,11 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignore": ["index.test-d.ts", "lib/vendor/htm.test-d.ts"]
+  "workspaces": {
+    ".": {
+      "ignore": ["index.test-d.ts"]
+    },
+    "packages/htm-improved": {
+      "ignore": ["index.test-d.ts"]
+    }
+  }
 }

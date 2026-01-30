@@ -1,0 +1,46 @@
+{
+  "name": "@voxpelli/htm-improved",
+  "version": "1.0.0",
+  "description": "Improved fork of htm with JSDoc types, security fixes, and better caching",
+  "homepage": "https://github.com/voxpelli/async-htm-to-string/tree/main/packages/htm-improved",
+  "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/voxpelli/async-htm-to-string.git",
+    "directory": "packages/htm-improved"
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "htm",
+    "hyperscript",
+    "tagged template",
+    "template literals",
+    "jsx",
+    "vdom",
+    "virtual dom"
+  ],
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "lib/",
+    "CHANGES.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "tsd": "^0.33.0"
+  },
+  "scripts": {
+    "test": "tsd"
+  }
+}

@@ -4,11 +4,14 @@
   "description": "Renders a htm tagged template asyncly into a string",
   "homepage": "http://github.com/voxpelli/async-htm-to-string",
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
-  "license": "(0BSD AND Apache-2.0)",
+  "license": "0BSD",
   "repository": {
     "type": "git",
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
@@ -51,9 +54,7 @@
     "lib/**/*.d.ts.map",
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "lib/**/*.mjs",
-    "lib/vendor/htm-LICENSE",
-    "lib/vendor/htm-CHANGES.md"
+    "lib/**/*.mjs"
   ],
   "scripts": {
     "build:0-clean": "run-s clean",
@@ -86,6 +87,7 @@
     "watch": "run-p watch:*"
   },
   "dependencies": {
+    "@voxpelli/htm-improved": "workspace:*",
     "@voxpelli/typed-utils": "^3.0.0",
     "buffered-async-iterable": "^1.0.1",
     "stringify-entities": "^4.0.3"
@@ -120,6 +122,6 @@
   },
   "tsd": {
     "directory": ".",
-    "testFilePattern": "{index,lib/vendor/htm}.test-d.ts"
+    "testFilePattern": "index.test-d.ts"
   }
 }

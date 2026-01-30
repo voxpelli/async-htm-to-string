@@ -1,5 +1,5 @@
 /**
- * Tests for the vendored htm module.
+ * Tests for the htm-improved module (@voxpelli/htm-improved).
  *
  * These tests are ported from the upstream htm repository:
  * https://github.com/developit/htm/blob/master/test/index.test.mjs
@@ -20,9 +20,9 @@ const chai = require('chai');
 chai.should();
 const { expect } = chai;
 
-const htm = require('../lib/vendor/htm.js');
+const htm = require('@voxpelli/htm-improved');
 
-/** @import { HFunction } from '../lib/vendor/htm-types.d.ts' */
+/** @import { HFunction } from '@voxpelli/htm-improved' */
 
 /**
  * Simple h function for testing that returns a plain object.
@@ -91,7 +91,7 @@ const MyComponent = () => {};
 // Tests ported from upstream htm/test/index.test.mjs
 // =============================================================================
 
-describe('vendored htm', () => {
+describe('@voxpelli/htm-improved', () => {
   describe('basic parsing', () => {
     it('should return undefined for empty template', () => {
       expect(html``).to.equal(undefined);

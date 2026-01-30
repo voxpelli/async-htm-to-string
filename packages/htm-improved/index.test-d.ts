@@ -1,18 +1,23 @@
 /**
- * Type tests for vendored htm module.
+ * Type tests for @voxpelli/htm-improved module.
  *
- * These tests verify the TypeScript type definitions for the vendored htm.
- * This file is original work for async-htm-to-string (not derived from htm's
+ * These tests verify the TypeScript type definitions for htm-improved.
+ * This file is original work for @voxpelli/htm-improved (not derived from htm's
  * test suite, which does not include tsd tests).
  *
  * Run with: npx tsd
  */
 
 import { expectType, expectAssignable } from 'tsd';
-import type { HFunction, BoundHtm, BuiltTemplate, Htm } from './htm-types.d.ts';
 
 // Import the actual module for runtime type checking
-import htm from './htm.js';
+import htm = require('./index.js');
+
+// Type aliases from the namespace
+type HFunction<Result = unknown> = htm.HFunction<Result>;
+type BoundHtm<Result = unknown> = htm.BoundHtm<Result>;
+type BuiltTemplate = htm.BuiltTemplate;
+type Htm = htm.Htm;
 
 // ============================================================================
 // Test: htm.bind() basic usage

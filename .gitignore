@@ -17,6 +17,7 @@
 !/lib/**/*-types.d.ts
 !/index.d.ts
 !/index.d.mts
+!/packages/**/index.d.ts
 
 # Library specific ones
 /lib/render.mjs

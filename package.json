@@ -51,7 +51,8 @@
     "lib/**/*.d.ts.map",
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "lib/**/*.mjs"
+    "lib/**/*.mjs",
+    "lib/vendor/htm-LICENSE"
   ],
   "scripts": {
     "build:0-clean": "run-s clean",
@@ -86,7 +87,6 @@
   "dependencies": {
     "@voxpelli/typed-utils": "^3.0.0",
     "buffered-async-iterable": "^1.0.1",
-    "htm": "^3.0.4",
     "stringify-entities": "^4.0.3"
   },
   "devDependencies": {

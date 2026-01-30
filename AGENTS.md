@@ -2,7 +2,7 @@
 
 > Instructions for AI coding agents working on this project.
 
-This is a Node.js library that renders [htm](https://github.com/developit/htm) tagged templates asynchronously into strings for server-side rendering. It follows the voxpelli Node.js module style.
+This is a Node.js library that renders [htm](https://github.com/developit/htm) tagged templates asynchronously into strings for server-side rendering. It follows the [voxpelli Node.js module style](https://github.com/voxpelli/node-module-template/blob/main/.github/copilot-instructions.md).
 
 ## Dev environment
 

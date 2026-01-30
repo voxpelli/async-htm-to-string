@@ -2,7 +2,7 @@
 
 > See also: [AGENTS.md](../AGENTS.md) in the repository root for universal AI agent guidelines.
 
-This project follows the voxpelli Node.js module style for library development.
+This project follows the [voxpelli Node.js module style](https://github.com/voxpelli/node-module-template/blob/main/.github/copilot-instructions.md) for library development.
 
 ## Quick Reference
 

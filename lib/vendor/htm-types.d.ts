@@ -14,11 +14,15 @@
  * - Component functions: (props, children) => element
  * - Any interpolated value: ${someVariable}
  *
+ * The `props` parameter uses `null` (not `undefined`) for "no props" to match
+ * the convention used by React's createElement, Preact's h, and other
+ * hyperscript implementations. This is the original htm behavior.
+ *
  * @template Result - The return type of the hyperscript function
  */
 export type HFunction<Result = unknown> = (
   type: unknown,
-  props: Record<string, unknown> | undefined,
+  props: Record<string, unknown> | null,
   ...children: unknown[]
 ) => Result;
 

@@ -17,7 +17,6 @@ This document lists all changes made to htm v3.1.1 when vendoring it into async-
 | Types | Added JSDoc annotations | Type safety and IDE support |
 | Types | `any` → `unknown` | Stricter type checking |
 | Style | Reformatted to neostandard | Project consistency |
-| Style | `null` → `undefined` | unicorn/no-null compliance |
 | Security | Replaced regex with iterative function | Fix backtracking vulnerability |
 | Structure | Single CJS file | Simplified bundling |
 | Structure | Removed MINI mode | Not needed for our use case |
@@ -43,7 +42,7 @@ export default htm;
 ```typescript
 export type HFunction<Result = unknown> = (
   type: unknown,
-  props: Record<string, unknown> | undefined,
+  props: Record<string, unknown> | null,
   ...children: unknown[]
 ) => Result;
 
@@ -67,7 +66,7 @@ export default htm;
 | Aspect | Original | Vendored | Rationale |
 |--------|----------|----------|-----------|
 | `type` parameter | `any` | `unknown` | Forces explicit type narrowing |
-| `props` parameter | `Record<string, any>` | `Record<string, unknown> \| undefined` | Explicit undefined handling |
+| `props` parameter | `Record<string, any>` | `Record<string, unknown> \| null` | Stricter values, preserves null |
 | `children` rest | `any[]` | `unknown[]` | Stricter child types |
 | `values` rest | `any[]` | `unknown[]` | Stricter interpolation types |
 | Props type | Implicit | `HFunction<Result>` | Named, reusable type |
@@ -84,18 +83,22 @@ Our types use `unknown`, which is the type-safe counterpart:
 3. **IDE support**: Better autocomplete and error messages
 4. **Runtime safety**: Catches type mismatches at compile time
 
-### Why `undefined` Instead of `null` for Props
+### Why `null` is Preserved for Props
 
 ```typescript
-// Original: props is implicitly null when no props
-h: (type: any, props: Record<string, any>, ...children: any[]) => HResult
-
-// Vendored: props is explicitly undefined when no props
-h: (type: unknown, props: Record<string, unknown> | undefined, ...children: unknown[]) => Result
+// Original and Vendored (both use null):
+h: (type: unknown, props: Record<string, unknown> | null, ...children: unknown[]) => Result
 ```
 
-This aligns with the `unicorn/no-null` ESLint rule and JavaScript conventions
-where `undefined` is preferred over `null` for "no value" semantics.
+We intentionally preserve `null` for the props parameter despite the `unicorn/no-null`
+rule because:
+
+1. **React compatibility**: `createElement(type, null, children)` is the standard API
+2. **Preact compatibility**: Same convention as React
+3. **API stability**: Changing to `undefined` would be a breaking change
+4. **Type safety**: React's types use `props?: P | null`, not `P | undefined`
+
+The eslint rule is disabled for `lib/vendor/htm.js` only.
 
 ---
 
@@ -274,19 +277,28 @@ for (const staticPart of statics) {
 **Reason**: `unicorn/no-for-loop` rule prefers for-of loops. The index is still
 needed for commit() calls, so it's tracked manually.
 
-#### 5.3 Null → Undefined
+#### 5.3 Null Preserved (Not Changed)
 
-**Original**:
+**Original and Vendored** (unchanged):
 ```javascript
 evaluate(h, childBuilt, fields, ['', null])
 ```
 
-**Vendored**:
-```javascript
-evaluate(h, childBuilt, fields, ['', undefined])
-```
+**Why we kept `null`**: The `unicorn/no-null` rule normally prefers `undefined`,
+but we explicitly disabled this rule for the vendored htm because:
 
-**Reason**: `unicorn/no-null` rule prefers undefined over null.
+1. **React/Preact compatibility**: `createElement(type, null, children)` is the
+   standard convention. React's types explicitly use `props?: P | null`.
+
+2. **API contract**: The original htm API uses `null` for "no props". Changing
+   this would be a breaking change for users who rely on strict equality checks.
+
+3. **Semantic meaning**: In hyperscript conventions:
+   - `null` = "explicitly no props" (intentional absence)
+   - `undefined` = "props not provided" (structural absence)
+
+The eslint override is configured in `eslint.config.mjs` to allow `null` in
+this file only.
 
 ### 6. Module Format
 
@@ -458,8 +470,8 @@ The vendored htm is **100% behaviorally compatible** with htm v3.1.1 for the
 
 ### Key Behavioral Notes
 
-1. **Props value**: The original passes `null` when no props; we pass `undefined`.
-   This is compatible with most h functions which treat both as "no props".
+1. **Props value**: Unchanged - passes `null` when no props, matching the
+   React/Preact convention exactly.
 
 2. **Whitespace trimming**: Produces identical results to the original regex,
    but with O(n) complexity instead of potential O(n²) or worse.

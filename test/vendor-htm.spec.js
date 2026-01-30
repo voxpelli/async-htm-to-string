@@ -26,8 +26,10 @@ const htm = require('../lib/vendor/htm.js');
 
 /**
  * Simple h function for testing that returns a plain object.
+ * Note: props is null (not undefined) when no props are provided,
+ * matching React/Preact convention.
  *
- * @type {HFunction<{ tag: unknown, props: Record<string, unknown> | undefined, children: unknown[] }>}
+ * @type {HFunction<{ tag: unknown, props: Record<string, unknown> | null, children: unknown[] }>}
  */
 const h = (tag, props, ...children) => ({ tag, props, children });
 
@@ -56,14 +58,14 @@ const bitReturner = function () {
 /**
  * Wrap an h function to allow forcing subtrees to be static.
  *
- * @param {HFunction<{ tag: unknown, props: Record<string, unknown> | undefined, children: unknown[] }>} originalH - The original h function
+ * @param {HFunction<{ tag: unknown, props: Record<string, unknown> | null, children: unknown[] }>} originalH - The original h function
  * @returns {HFunction<unknown>} The wrapped h function
  */
 const wrapH = (originalH) => {
   /**
    * @this {[number, ...unknown[]]}
    * @param {unknown} type
-   * @param {Record<string, unknown> | undefined} props
+   * @param {Record<string, unknown> | null} props
    * @param {...unknown} children
    * @returns {unknown}
    */
@@ -96,22 +98,22 @@ describe('vendored htm', () => {
     });
 
     it('should parse single named elements', () => {
-      expect(html`<div />`).to.deep.equal({ tag: 'div', props: undefined, children: [] });
-      expect(html`<div/>`).to.deep.equal({ tag: 'div', props: undefined, children: [] });
-      expect(html`<span />`).to.deep.equal({ tag: 'span', props: undefined, children: [] });
+      expect(html`<div />`).to.deep.equal({ tag: 'div', props: null, children: [] });
+      expect(html`<div/>`).to.deep.equal({ tag: 'div', props: null, children: [] });
+      expect(html`<span />`).to.deep.equal({ tag: 'span', props: null, children: [] });
     });
 
     it('should parse multiple root elements', () => {
       expect(html`<a /><b></b><c><//>`).to.deep.equal([
-        { tag: 'a', props: undefined, children: [] },
-        { tag: 'b', props: undefined, children: [] },
-        { tag: 'c', props: undefined, children: [] },
+        { tag: 'a', props: null, children: [] },
+        { tag: 'b', props: null, children: [] },
+        { tag: 'c', props: null, children: [] },
       ]);
     });
 
     it('should parse single dynamic tag name', () => {
-      expect(html`<${'foo'} />`).to.deep.equal({ tag: 'foo', props: undefined, children: [] });
-      expect(html`<${FooComponent} />`).to.deep.equal({ tag: FooComponent, props: undefined, children: [] });
+      expect(html`<${'foo'} />`).to.deep.equal({ tag: 'foo', props: null, children: [] });
+      expect(html`<${FooComponent} />`).to.deep.equal({ tag: FooComponent, props: null, children: [] });
     });
   });
 
@@ -153,7 +155,7 @@ describe('vendored htm', () => {
     });
 
     it('should handle slash in middle of tag name or property name', () => {
-      expect(html`<ab/ba prop=value>`).to.deep.equal({ tag: 'ab', props: undefined, children: [] });
+      expect(html`<ab/ba prop=value>`).to.deep.equal({ tag: 'ab', props: null, children: [] });
       expect(html`<abba pr/op=value>`).to.deep.equal({ tag: 'abba', props: { pr: true }, children: [] });
     });
 
@@ -208,12 +210,12 @@ describe('vendored htm', () => {
 
   describe('closing tags', () => {
     it('should parse closing tag', () => {
-      expect(html`<a></a>`).to.deep.equal({ tag: 'a', props: undefined, children: [] });
+      expect(html`<a></a>`).to.deep.equal({ tag: 'a', props: null, children: [] });
       expect(html`<a b></a>`).to.deep.equal({ tag: 'a', props: { b: true }, children: [] });
     });
 
     it('should parse auto-closing tag', () => {
-      expect(html`<a><//>`).to.deep.equal({ tag: 'a', props: undefined, children: [] });
+      expect(html`<a><//>`).to.deep.equal({ tag: 'a', props: null, children: [] });
     });
   });
 
@@ -228,44 +230,42 @@ describe('vendored htm', () => {
 
   describe('children', () => {
     it('should parse text child', () => {
-      expect(html`<a>foo</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo'] });
-      expect(html`<a>foo bar</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo bar'] });
-      expect(html`<a>foo "<b /></a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo "', { tag: 'b', props: undefined, children: [] }] });
+      expect(html`<a>foo</a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo'] });
+      expect(html`<a>foo bar</a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo bar'] });
+      expect(html`<a>foo "<b /></a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo "', { tag: 'b', props: null, children: [] }] });
     });
 
     it('should parse dynamic child', () => {
-      expect(html`<a>${'foo'}</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo'] });
+      expect(html`<a>${'foo'}</a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo'] });
     });
 
     it('should parse mixed text and dynamic children', () => {
-      expect(html`<a>${'foo'}bar</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo', 'bar'] });
-      expect(html`<a>before${'foo'}after</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['before', 'foo', 'after'] });
+      expect(html`<a>${'foo'}bar</a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo', 'bar'] });
+      expect(html`<a>before${'foo'}after</a>`).to.deep.equal({ tag: 'a', props: null, children: ['before', 'foo', 'after'] });
       // Note: Original test uses null, we use undefined due to unicorn/no-null
-      // eslint-disable-next-line unicorn/no-null
-      expect(html`<a>foo${null}</a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['foo', null] });
+
+      expect(html`<a>foo${null}</a>`).to.deep.equal({ tag: 'a', props: null, children: ['foo', null] });
     });
 
     it('should parse element child', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><b /></a>`).to.deep.equal(h('a', undefined, h('b', undefined)));
+      expect(html`<a><b /></a>`).to.deep.equal(h('a', null, h('b', null)));
     });
 
     it('should parse multiple element children', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><b /><c /></a>`).to.deep.equal(h('a', undefined, h('b', undefined), h('c', undefined)));
+      expect(html`<a><b /><c /></a>`).to.deep.equal(h('a', null, h('b', null), h('c', null)));
       expect(html`<a x><b y /><c z /></a>`).to.deep.equal(h('a', { x: true }, h('b', { y: true }), h('c', { z: true })));
       expect(html`<a x=1><b y=2 /><c z=3 /></a>`).to.deep.equal(h('a', { x: '1' }, h('b', { y: '2' }), h('c', { z: '3' })));
       expect(html`<a x=${1}><b y=${2} /><c z=${3} /></a>`).to.deep.equal(h('a', { x: 1 }, h('b', { y: 2 }), h('c', { z: 3 })));
     });
 
     it('should parse mixed typed children', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a>foo<b /></a>`).to.deep.equal(h('a', undefined, 'foo', h('b', undefined)));
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><b />bar</a>`).to.deep.equal(h('a', undefined, h('b', undefined), 'bar'));
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a>before<b />after</a>`).to.deep.equal(h('a', undefined, 'before', h('b', undefined), 'after'));
-      expect(html`<a>before<b x=1 />after</a>`).to.deep.equal(h('a', undefined, 'before', h('b', { x: '1' }), 'after'));
+      expect(html`<a>foo<b /></a>`).to.deep.equal(h('a', null, 'foo', h('b', null)));
+
+      expect(html`<a><b />bar</a>`).to.deep.equal(h('a', null, h('b', null), 'bar'));
+
+      expect(html`<a>before<b />after</a>`).to.deep.equal(h('a', null, 'before', h('b', null), 'after'));
+
+      expect(html`<a>before<b x=1 />after</a>`).to.deep.equal(h('a', null, 'before', h('b', { x: '1' }), 'after'));
 
       expect(
         html`
@@ -277,8 +277,8 @@ describe('vendored htm', () => {
             after
           </a>
         `
-        // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      ).to.deep.equal(h('a', undefined, 'before', 'foo', h('b', undefined), 'bar', 'after'));
+
+      ).to.deep.equal(h('a', null, 'before', 'foo', h('b', null), 'bar', 'after'));
     });
   });
 
@@ -293,8 +293,9 @@ describe('vendored htm', () => {
     });
 
     it('should allow NUL characters in text', () => {
-      expect(html`<a>\0</a>`).to.deep.equal(h('a', undefined, '\0'));
-      expect(html`<a>\0${'foo'}</a>`).to.deep.equal(h('a', undefined, '\0', 'foo'));
+      expect(html`<a>\0</a>`).to.deep.equal(h('a', null, '\0'));
+
+      expect(html`<a>\0${'foo'}</a>`).to.deep.equal(h('a', null, '\0', 'foo'));
     });
   });
 
@@ -309,14 +310,13 @@ describe('vendored htm', () => {
 
   describe('HTML comments', () => {
     it('should ignore HTML comments', () => {
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><!-- Hello, world! --></a>`).to.deep.equal(h('a', undefined));
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><!-- Hello,\nworld! --></a>`).to.deep.equal(h('a', undefined));
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><!-- ${'Hello, world!'} --></a>`).to.deep.equal(h('a', undefined));
-      // eslint-disable-next-line unicorn/no-useless-undefined -- required by h() signature
-      expect(html`<a><!--> Hello, world <!--></a>`).to.deep.equal(h('a', undefined));
+      expect(html`<a><!-- Hello, world! --></a>`).to.deep.equal(h('a', null));
+
+      expect(html`<a><!-- Hello,\nworld! --></a>`).to.deep.equal(h('a', null));
+
+      expect(html`<a><!-- ${'Hello, world!'} --></a>`).to.deep.equal(h('a', null));
+
+      expect(html`<a><!--> Hello, world <!--></a>`).to.deep.equal(h('a', null));
     });
   });
 });
@@ -332,8 +332,8 @@ describe('vendored htm statics caching', () => {
       const x = () => html`<div>a</div>`;
       const a = x();
       const b = x();
-      expect(a).to.deep.equal({ tag: 'div', props: undefined, children: ['a'] });
-      expect(b).to.deep.equal({ tag: 'div', props: undefined, children: ['a'] });
+      expect(a).to.deep.equal({ tag: 'div', props: null, children: ['a'] });
+      expect(b).to.deep.equal({ tag: 'div', props: null, children: ['a'] });
       expect(a).to.equal(b); // Same reference due to caching
     });
 
@@ -454,7 +454,7 @@ describe('vendored htm security', () => {
       const result = html`<a>${pathological}test</a>`;
       const elapsed = Date.now() - start;
 
-      expect(result).to.deep.equal({ tag: 'a', props: undefined, children: [pathological, 'test'] });
+      expect(result).to.deep.equal({ tag: 'a', props: null, children: [pathological, 'test'] });
       // Should complete in well under a second (the original regex could take minutes)
       expect(elapsed).to.be.lessThan(100);
     });
@@ -464,32 +464,32 @@ describe('vendored htm security', () => {
       expect(html`
         <a>
           foo</a>
-      `).to.deep.equal({ tag: 'a', props: undefined, children: ['foo'] });
+      `).to.deep.equal({ tag: 'a', props: null, children: ['foo'] });
 
       // Trailing whitespace with newline
       expect(html`
         <a>foo
         </a>
-      `).to.deep.equal({ tag: 'a', props: undefined, children: ['foo'] });
+      `).to.deep.equal({ tag: 'a', props: null, children: ['foo'] });
 
       // Both leading and trailing
       expect(html`
         <a>
           foo
         </a>
-      `).to.deep.equal({ tag: 'a', props: undefined, children: ['foo'] });
+      `).to.deep.equal({ tag: 'a', props: null, children: ['foo'] });
     });
 
     it('should preserve whitespace without newlines', () => {
       // Just spaces - no newline, so preserved
-      expect(html`<a>   foo   </a>`).to.deep.equal({ tag: 'a', props: undefined, children: ['   foo   '] });
+      expect(html`<a>   foo   </a>`).to.deep.equal({ tag: 'a', props: null, children: ['   foo   '] });
     });
   });
 });
 
 describe('vendored htm type compatibility', () => {
   describe('h function receives correct types', () => {
-    it('should pass undefined for props when no props exist', () => {
+    it('should pass null for props when no props exist', () => {
       /** @type {unknown} */
       let receivedProps;
       const customHtml = htm.bind((type, props) => {
@@ -498,7 +498,7 @@ describe('vendored htm type compatibility', () => {
       });
 
       customHtml`<div />`;
-      expect(receivedProps).to.equal(undefined);
+      expect(receivedProps).to.equal(null);
     });
 
     it('should pass object for props when props exist', () => {

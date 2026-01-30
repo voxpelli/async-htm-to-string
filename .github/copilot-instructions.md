@@ -1,6 +1,6 @@
 # GitHub Copilot Instructions
 
-> See also: [AGENTS.md](../AGENTS.md) in the repository root for universal AI agent guidelines.
+> See also: [AGENTS.md](../AGENTS.md) in the repository root for comprehensive AI agent guidelines.
 
 This project follows the [voxpelli Node.js module style](https://github.com/voxpelli/node-module-template/blob/main/.github/copilot-instructions.md) for library development.
 
@@ -21,33 +21,46 @@ This project follows the [voxpelli Node.js module style](https://github.com/voxp
 - **Quotes**: Single quotes
 - **Semicolons**: Yes
 - **Indent**: 2 spaces
-- **Module format**: CJS in `.js`, ESM in `.mjs`
+- **Module format**: CJS in `.js` (with linemod comments), ESM in `.mjs`
 
 ## Type Annotations
 
-Use JSDoc for types in JavaScript:
+Use JSDoc with `@import` syntax:
 
 ```javascript
+/** @import { HtmlMethodResult } from './element-types.d.ts' */
+
 /**
- * @param {string} input
- * @param {RenderOptions} [options]
- * @returns {AsyncGenerator<string>}
+ * @param {HtmlMethodResult} item
+ * @returns {AsyncIterableIterator<string>}
  */
-export async function* render(input, options) {
-  // implementation
-}
+async function* render(item) { /* ... */ }
 ```
+
+## Linemod Comments
+
+When editing `lib/*.js` files, preserve linemod transformation comments:
+
+- `// linemod-remove` - Line removed in ESM
+- `// linemod-add: <code>` - Line added in ESM
+- `// linemod-replace-with: <code>` - Line replaced in ESM
+- `// linemod-prefix-with: <code>` - Code prefixed in ESM
+
+## Public API
+
+`html`, `rawHtml`, `h`, `render`, `renderToString`, `generatorToString`
 
 ## Testing
 
-- Framework: Mocha + Chai + chai-as-promised + sinon
-- Location: `test/*.spec.js`
+- Framework: Mocha + Chai (`should` style) + chai-as-promised + sinon
+- Type tests: tsd in `index.test-d.ts`
 - Coverage: c8 (aim for >99% type coverage)
 
 ## Key Constraints
 
 1. Don't add dependencies without strong justification
-2. Don't use `any` types
-3. Don't skip JSDoc annotations
-4. Don't commit generated `.d.ts` files (except `index.d.ts`, `index.d.mts`)
-5. Always run `npm test` before committing
+2. Don't break linemod comments
+3. Don't use `any` types
+4. Don't skip JSDoc annotations
+5. Don't commit generated files (except `index.d.ts`, `index.d.mts`)
+6. Always run `npm test` before committing

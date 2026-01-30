@@ -17,4 +17,4 @@ jobs:
   test:
     uses: voxpelli/ghatemplates/.github/workflows/test.yml@main
     with:
-      node-versions: '18,20,22'
+      node-versions: '20,22,24,25'

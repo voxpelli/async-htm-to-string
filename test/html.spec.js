@@ -144,6 +144,10 @@ describe('html``', () => {
     should.Throw(() => { html`${[Symbol.asyncIterator, 'foo']}`; }, TypeError, 'Resolved to invalid value type: symbol');
   });
 
+  it('should throw on promise resolving to array nested', async () => {
+    await html`${Promise.resolve(['a', 'b'])}`.should.be.rejectedWith(TypeError, 'Unexpected nested array value found');
+  });
+
   it('should throw on multi root type', () => {
     should.Throw(() => { html`foo${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
     // @ts-ignore

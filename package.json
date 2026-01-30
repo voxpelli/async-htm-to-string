@@ -4,7 +4,7 @@
   "description": "Renders a htm tagged template asyncly into a string",
   "homepage": "http://github.com/voxpelli/async-htm-to-string",
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
-  "license": "0BSD",
+  "license": "(0BSD AND Apache-2.0)",
   "repository": {
     "type": "git",
     "url": "git://github.com/voxpelli/async-htm-to-string.git"

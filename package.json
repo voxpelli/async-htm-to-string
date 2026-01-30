@@ -114,7 +114,7 @@
     "sinon-chai": "^3.7.0",
     "tsd": "^0.33.0",
     "type-coverage": "^2.29.7",
-    "typescript": "~5.9.0",
+    "typescript": "~5.9.3",
     "validate-conventional-commit": "^1.0.4"
   }
 }

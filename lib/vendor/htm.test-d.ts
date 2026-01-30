@@ -1,6 +1,10 @@
 /**
  * Type tests for vendored htm module.
  *
+ * These tests verify the TypeScript type definitions for the vendored htm.
+ * This file is original work for async-htm-to-string (not derived from htm's
+ * test suite, which does not include tsd tests).
+ *
  * Run with: npx tsd
  */
 

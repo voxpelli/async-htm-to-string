@@ -1,5 +1,11 @@
 /**
  * Type definitions for vendored htm v3.1.1
+ * https://github.com/developit/htm
+ *
+ * Based on the original htm type definitions.
+ * Copyright 2018 Google Inc.
+ * Licensed under the Apache License, Version 2.0
+ * See ./htm-LICENSE for full license text
  *
  * These types provide type safety when using htm with async-htm-to-string.
  * They are intentionally more permissive than ideal to match htm's runtime

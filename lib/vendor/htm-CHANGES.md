@@ -1,5 +1,9 @@
 # Vendored htm - Changes from Original
 
+This document fulfills the Apache License 2.0 Section 4(b) requirement to
+"cause any modified files to carry prominent notices stating that You changed
+the files."
+
 This document lists all changes made to htm v3.1.1 when vendoring it into async-htm-to-string.
 
 ## Source Version

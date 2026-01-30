@@ -152,7 +152,7 @@ React-borrowed list of void elements in `lib/react-utils.js`: `area`, `base`, `b
 
 - Source `.js` files
 - Hand-written type files: `index.d.ts`, `index.d.mts`, `lib/*-types.d.ts`
-- Do NOT commit: generated `.d.ts` in `lib/`, generated `.mjs` files
+- Do NOT commit: generated `.d.ts` in `lib/`, or linemod-generated ESM artifacts (e.g. `lib/render.mjs`)
 
 ## Dependencies
 

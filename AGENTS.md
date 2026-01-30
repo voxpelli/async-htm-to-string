@@ -1,10 +1,13 @@
-# Cursor Rules for async-htm-to-string
+# AI Agent Instructions for async-htm-to-string
+
+> This file provides guidelines for AI coding assistants (GitHub Copilot, Cursor, etc.) working on this project.
 
 ## Project Overview
 
 This is a **Node.js library module** that renders htm tagged templates asynchronously into strings. It's designed for server-side rendering (SSR) scenarios and follows the voxpelli Node.js module style.
 
 ### Key Characteristics
+
 - ESM and CJS dual module support (via linemod build)
 - TypeScript types written in JavaScript (JSDoc + TypeScript)
 - Strict type coverage (>99%)
@@ -16,6 +19,7 @@ This is a **Node.js library module** that renders htm tagged templates asynchron
 ## Code Style and Standards
 
 ### JavaScript Style
+
 - Use ESM syntax (`import`/`export`) in `.mjs` files
 - Use CommonJS syntax (`require`/`module.exports`) in `.js` files
 - Follow [neostandard](https://github.com/neostandard/neostandard) JavaScript style guide
@@ -24,12 +28,14 @@ This is a **Node.js library module** that renders htm tagged templates asynchron
 - 2-space indentation
 
 ### Type Safety
+
 - Write JavaScript for implementation, use JSDoc for type annotations
 - Maintain strict type coverage (>99%)
 - Hand-written type definitions go in `lib/*-types.d.ts` files
 - Auto-generated `.d.ts` files are created during build (don't commit them except `index.d.ts` and `index.d.mts`)
 
 Example of proper JSDoc typing:
+
 ```javascript
 /**
  * @param {string} input - The input value
@@ -42,6 +48,7 @@ export async function* render(input, options) {
 ```
 
 ### Module Structure
+
 ```
 /index.js              # CJS entry point (re-exports from lib)
 /index.mjs             # ESM entry point (generated via linemod)
@@ -57,12 +64,14 @@ export async function* render(input, options) {
 ## Testing
 
 ### Test Framework
+
 - **Runner**: Mocha
 - **Assertions**: Chai with chai-as-promised
 - **Mocking**: Sinon with sinon-chai
 - **Coverage**: c8
 
 ### Test File Structure
+
 ```javascript
 /// <reference types="node" />
 /// <reference types="mocha" />
@@ -86,6 +95,7 @@ describe('render()', () => {
 ```
 
 ### Running Tests
+
 ```bash
 npm test           # Full test suite with all checks
 npm run test:mocha # Just the tests with coverage
@@ -139,16 +149,19 @@ npm run build-for-test
 ## Code Quality Tools
 
 ### ESLint
+
 - Configuration: `eslint.config.mjs`
 - Based on `@voxpelli/eslint-config`
 - Run: `npm run check:1:lint`
 
 ### TypeScript
+
 - Config: `tsconfig.json` (type checking)
 - Config: `declaration.tsconfig.json` (declaration generation)
 - Run: `npm run check:1:tsc`
 
 ### Knip
+
 - Detects unused files, dependencies, and exports
 - Configuration: `.knip.jsonc`
 - Run: `npm run check:1:knip`
@@ -158,11 +171,13 @@ npm run build-for-test
 ## Git and Version Control
 
 ### Commits
+
 - Use conventional commit messages
 - Husky pre-push hooks run checks
 - Keep commits focused and atomic
 
 ### What to Commit
+
 - Source `.js` files
 - Hand-written type files (`index.d.ts`, `index.d.mts`, `lib/*-types.d.ts`)
 - Do NOT commit auto-generated `.d.ts` files in `lib/`
@@ -203,10 +218,13 @@ npm run build-for-test
 ## Project-Specific Notes
 
 ### htm Integration
+
 This library wraps [htm](https://github.com/developit/htm) to provide async server-side rendering. The `html` tagged template function is created by binding htm to the render function.
 
 ### Async Generators
+
 The core rendering uses async generators to stream HTML output efficiently. When working with render functions:
+
 ```javascript
 // Consuming render output
 for await (const chunk of render(element)) {
@@ -215,4 +233,5 @@ for await (const chunk of render(element)) {
 ```
 
 ### Element Types
+
 Custom element types are defined in `lib/element-types.d.ts`. When adding new element support, update these type definitions.

@@ -69,6 +69,20 @@ describe('async support', () => {
       .should.eventually.equal('Just String');
   });
 
+  it('should handle async component returning array of promises', async () => {
+    /** @type {import('..').SimpleRenderableElementFunction} */
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const AsyncComp = async () => {
+      return [
+        Promise.resolve('A'),
+        Promise.resolve('B'),
+      ];
+    };
+
+    await renderToString(html`<div><${AsyncComp} /></div>`)
+      .should.eventually.equal('<div>AB</div>');
+  });
+
   it('should throw when skipStringEscape is used with non-string result', async () => {
     const element = {
       type: () => 123,

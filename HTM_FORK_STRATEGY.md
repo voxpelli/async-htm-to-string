@@ -1,314 +1,435 @@
-# HTM Fork Strategy: Vendoring vs Standalone Package
+# HTM Fork Strategy: Implementation Report
 
-This document evaluates the trade-offs between two forking approaches for the `htm` dependency.
+This document describes the implementation of the `@voxpelli/htm-improved` workspace package, the rationale behind key decisions, and guidance for future maintenance.
+
+**Last Updated:** January 2026 (post-implementation)
 
 ---
 
 ## Executive Summary
 
-| Approach | Best For | Recommendation |
-|----------|----------|----------------|
-| **Vendoring** | Single project, minimal maintenance | ✅ **Recommended for this project** |
-| **Standalone Package** | Multiple projects, community benefit | Consider if maintaining other htm-dependent projects |
+**Status: ✅ Implemented as workspace package**
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Approach** | Workspace package (not vendoring) | Enables future git subtree split |
+| **License** | Apache-2.0 (separate from main 0BSD) | Clean license separation |
+| **Types** | Full JSDoc + tsd tests | Type safety with CJS compatibility |
+| **Security** | ReDoS fix implemented | O(n) iterative whitespace trimming |
 
 ---
 
-## Option A: Vendoring (Inline into Project)
+## 1. Implementation Overview
 
-### What It Means
-
-Copy htm's built files directly into the project's `lib/` directory:
+### 1.1 Final Structure
 
 ```
-lib/
-├── vendor/
-│   ├── htm.js          # 1.2KB - CJS build
-│   ├── htm.mjs         # 1.2KB - ESM build  
-│   ├── htm.d.ts        # Type definitions
-│   └── htm-LICENSE     # Required by Apache 2.0
-├── htm.js              # Existing file, updated imports
+/workspace/
+├── packages/
+│   └── htm-improved/
+│       ├── lib/
+│       │   └── htm.js          # Core code (de-minified, typed)
+│       ├── index.js            # CJS entry point
+│       ├── index.d.ts          # TypeScript declarations
+│       ├── index.test-d.ts     # tsd type tests
+│       ├── package.json        # Apache-2.0 licensed
+│       ├── LICENSE             # Apache 2.0 (from htm)
+│       ├── CHANGES.md          # All modifications
+│       └── README.md           # Package documentation
+├── lib/
+│   └── htm.js                  # Imports from @voxpelli/htm-improved
+├── package.json                # workspaces: ["packages/*"]
 └── ...
 ```
 
-### Implementation
+### 1.2 Integration
 
 ```javascript
-// lib/htm.js - Before
-const htm = require('htm');
-
-// lib/htm.js - After (vendored)
-const htm = require('./vendor/htm.js');
-```
-
-### Advantages
-
-| Advantage | Impact |
-|-----------|--------|
-| **Zero external dependency** | Eliminates supply chain risk entirely |
-| **No npm publishing** | No package maintenance overhead |
-| **Atomic updates** | Changes ship with project releases |
-| **Simpler CI/CD** | No separate package pipeline |
-| **Full control** | Can modify without version coordination |
-| **Smaller install** | Users don't download unused htm features |
-
-### Disadvantages
-
-| Disadvantage | Impact | Mitigation |
-|--------------|--------|------------|
-| **No automatic updates** | Must manually check upstream | Low impact - htm is stable |
-| **License compliance** | Must include LICENSE file | Easy - add `lib/vendor/htm-LICENSE` |
-| **Code duplication** | If used in multiple projects | Only matters for multi-project |
-| **Discoverability** | Others can't benefit from fixes | Low impact for maintenance fork |
-| **Review burden** | Security reviewers must audit vendored code | Mitigated by small size (1.2KB) |
-
-### Files Required
-
-| File | Size | Purpose |
-|------|------|---------|
-| `htm.js` | 1,265 bytes | CJS entry point |
-| `htm.mjs` | 1,207 bytes | ESM entry point |
-| `htm.d.ts` | 218 bytes | TypeScript definitions |
-| `htm-LICENSE` | ~11KB | Apache 2.0 (required) |
-| **Total** | **~14KB** | |
-
-### License Compliance (Apache 2.0)
-
-Apache 2.0 requires:
-1. ✅ Include copy of license → `lib/vendor/htm-LICENSE`
-2. ✅ State changes made → Add header comment if modified
-3. ✅ Preserve copyright notices → Included in LICENSE file
-4. ✅ No trademark use → Not using "htm" as product name
-
----
-
-## Option B: Standalone Package (@voxpelli/htm)
-
-### What It Means
-
-Fork htm to a new npm package that can be published and shared:
-
-```
-@voxpelli/htm/
-├── package.json
-├── index.js
-├── index.mjs
-├── index.d.ts
-├── LICENSE
-└── README.md
-```
-
-### Implementation
-
-```javascript
-// lib/htm.js - Before
-const htm = require('htm');
-
-// lib/htm.js - After (standalone package)
-const htm = require('@voxpelli/htm');
+// lib/htm.js - Updated import
+const htm = require('@voxpelli/htm-improved');
+const _internalHtml = htm.bind(h);
 ```
 
 ```json
 // package.json
 {
+  "workspaces": ["packages/*"],
   "dependencies": {
-    "@voxpelli/htm": "^3.1.2"
+    "@voxpelli/htm-improved": "workspace:*"
   }
 }
 ```
 
-### Advantages
-
-| Advantage | Impact |
-|-----------|--------|
-| **Reusable across projects** | Benefit if maintaining multiple htm users |
-| **Community benefit** | Others can use the maintained fork |
-| **Standard npm workflow** | Familiar dependency management |
-| **Separate versioning** | Can release fixes independently |
-| **Automatic deduplication** | npm dedupes if multiple packages use it |
-| **Security scanning** | npm audit works normally |
-
-### Disadvantages
-
-| Disadvantage | Impact | Mitigation |
-|--------------|--------|------------|
-| **Package maintenance** | Must maintain npm package lifecycle | Overhead for single use |
-| **Publishing pipeline** | Need CI/CD for the fork | Additional infrastructure |
-| **Version coordination** | Must update both packages | Releases become coupled |
-| **Namespace decision** | @voxpelli/htm vs htm-maintained etc. | One-time decision |
-| **npm account required** | Need publishing rights | Already have for main package |
-| **Discoverability confusion** | Users may not find it | Document clearly |
-
-### Infrastructure Required
-
-| Component | Effort | Notes |
-|-----------|--------|-------|
-| GitHub repo | Low | Fork or new repo |
-| npm package | Low | Initial publish |
-| CI/CD | Medium | Test + publish workflow |
-| Documentation | Low | README explaining purpose |
-| Issue tracking | Ongoing | Must monitor for issues |
-
 ---
 
-## Comparison Matrix
+## 2. Why Workspace Package (Not Vendoring)
 
-| Factor | Vendoring | Standalone Package |
+### 2.1 Original Consideration
+
+| Factor | Vendoring | Workspace Package |
 |--------|-----------|-------------------|
-| **Initial effort** | 1-2 hours | 4-8 hours |
-| **Ongoing maintenance** | Near zero | Low but nonzero |
-| **Supply chain risk** | Eliminated | Shifted to your package |
-| **npm audit compatibility** | ⚠️ Won't flag vendored code | ✅ Normal scanning |
-| **Dependency tree** | Cleaner (one less dep) | Standard |
-| **Update workflow** | Manual copy | npm update |
-| **Multi-project reuse** | Copy to each | Single source |
-| **Community contribution** | Not possible | Possible |
-| **License complexity** | Must include LICENSE | Standard npm |
-| **Published package size** | +14KB | No change |
-| **Install size for users** | -246KB (no htm download) | No change |
+| Initial effort | 1-2 hours | 4-8 hours |
+| Future flexibility | Low | High |
+| License clarity | Inline comments | Separate package |
+| Type exports | Complex | Standard npm |
+| Community reuse | Not possible | Via git subtree |
+
+### 2.2 Decision: Workspace Package
+
+The workspace approach was chosen because:
+
+1. **Future Extraction**: Can split to standalone repo with `git subtree`
+2. **Clean License**: Apache-2.0 clearly isolated from main 0BSD
+3. **Standard Types**: CJS `export = htm` with namespace works normally
+4. **Publishable**: Could publish to npm if community interest emerges
+5. **Test Isolation**: Package can have its own test configuration
+
+### 2.3 Git Subtree Future
+
+If the package becomes useful to others:
+
+```bash
+# Split the subdirectory into a separate branch
+git subtree split -P packages/htm-improved -b htm-improved-split
+
+# Push to a new repository
+cd /path/to/new/htm-improved-repo
+git init
+git pull /path/to/async-htm-to-string htm-improved-split
+git remote add origin git@github.com:voxpelli/htm-improved.git
+git push -u origin main
+```
 
 ---
 
-## Decision Framework
+## 3. Technical Decisions
 
-### Choose Vendoring If:
+### 3.1 null vs undefined for Props
 
-- ✅ htm is only used in this one project
-- ✅ You want zero external dependency risk
-- ✅ You prefer simpler maintenance
-- ✅ You don't expect to make significant changes
-- ✅ Package size reduction is valued
-
-### Choose Standalone Package If:
-
-- ⬜ You maintain multiple projects using htm
-- ⬜ You want to contribute back to community
-- ⬜ You plan to make significant enhancements
-- ⬜ You need standard npm audit workflow
-- ⬜ You want others to benefit from maintenance
-
----
-
-## Recommendation for async-htm-to-string
-
-**Recommended: Vendoring**
-
-Rationale:
-
-1. **Single project use** - htm is only used by this library
-2. **Minimal changes expected** - Only security/compatibility patches
-3. **Simpler maintenance** - No separate package to manage
-4. **Size benefit** - Removes 246KB from user installs
-5. **Zero supply chain risk** - No external dependency to compromise
-
-### Implementation Plan
-
-#### Step 1: Create vendor directory
-
-```bash
-mkdir -p lib/vendor
-```
-
-#### Step 2: Copy required files
-
-```bash
-# Copy built files (not source - smaller and sufficient)
-cp node_modules/htm/dist/htm.js lib/vendor/
-cp node_modules/htm/dist/htm.mjs lib/vendor/
-cp node_modules/htm/dist/htm.d.ts lib/vendor/
-cp node_modules/htm/LICENSE lib/vendor/htm-LICENSE
-```
-
-#### Step 3: Add attribution header
+**Decision**: Keep `null` for "no props" argument
 
 ```javascript
-// lib/vendor/htm.js
+// htm passes null when no props exist
+h('div', null, 'child')
+```
+
+**Rationale**:
+- Matches React's `createElement(type, null, ...children)`
+- Matches Preact's `h(type, null, ...children)`
+- Original htm behavior
+- Ecosystem compatibility
+
+**Linting**: Added ESLint override for `unicorn/no-null`:
+
+```javascript
+// eslint.config.mjs
+{
+  files: ['packages/htm-improved/**/*.js', 'test/vendor-htm.spec.js'],
+  rules: {
+    'unicorn/no-null': 'off',
+  },
+}
+```
+
+### 3.2 ReDoS Security Fix
+
+**Original vulnerable code**:
+
+```javascript
+str.replace(/^\s*\n\s*|\s*\n\s*$/g, '')
+```
+
+This regex has polynomial backtracking on strings like `" ".repeat(1000) + "\n"`.
+
+**Fixed implementation**:
+
+```javascript
+const trimNewlineWhitespace = (str) => {
+  // Pass 1: Find start position (trim leading whitespace if it contains \n)
+  let start = 0;
+  let hasLeadingNewline = false;
+
+  while (start < str.length) {
+    const char = str[start];
+    if (char === '\n') {
+      hasLeadingNewline = true;
+      start++;
+    } else if (char === ' ' || char === '\t' || char === '\r') {
+      start++;
+    } else {
+      break;
+    }
+  }
+
+  if (!hasLeadingNewline) start = 0;
+
+  // Pass 2: Find end position (similar logic)
+  // ...
+
+  return str.slice(start, end);
+};
+```
+
+**Complexity**: O(n) linear time, immune to backtracking attacks.
+
+### 3.3 WeakMap for Outer Cache
+
+**Original**:
+
+```javascript
+const CACHES = new Map();  // h function → template cache
+```
+
+**Improved**:
+
+```javascript
+const CACHES = new WeakMap();  // h function → template cache
+```
+
+**Benefit**: When an h function is no longer referenced, its cache can be garbage collected. The original Map would hold references forever.
+
+### 3.4 Type System Design
+
+**Challenge**: CJS module with exported types
+
+**Solution**: Namespace merged with const
+
+```typescript
+declare const htm: Htm;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+declare namespace htm {
+  export type { HFunction, BoundHtm, BuiltTemplate, Htm };
+}
+
+export = htm;
+```
+
+**Usage**:
+
+```typescript
+import htm = require('@voxpelli/htm-improved');
+
+type HFunction = htm.HFunction;
+const html = htm.bind(myH);
+```
+
+---
+
+## 4. Changes from Original htm
+
+### 4.1 Summary Table
+
+| Category | Change | Impact |
+|----------|--------|--------|
+| **Security** | ReDoS fix in whitespace trimming | Critical |
+| **Performance** | WeakMap for outer cache | Minor improvement |
+| **Code Style** | De-minified, neostandard formatting | Maintainability |
+| **Types** | JSDoc throughout, `unknown` instead of `any` | Type safety |
+| **Documentation** | Comprehensive comments | Maintainability |
+| **Tests** | 62 tests (43 + 12 ported, 7 new) | Reliability |
+| **Removed** | Mini variant, Preact/React integrations | Simplification |
+
+### 4.2 What Was NOT Changed
+
+- **API**: 100% compatible with htm v3.1.1
+- **Parsing Algorithm**: Same state machine logic
+- **Output Format**: Identical element structure
+- **props = null Convention**: Preserved for ecosystem compatibility
+
+### 4.3 Full Documentation
+
+See `packages/htm-improved/CHANGES.md` for comprehensive details including:
+- Line-by-line source mapping
+- Algorithm explanation
+- Type comparison tables
+- Security analysis
+
+---
+
+## 5. License Compliance
+
+### 5.1 Apache 2.0 Requirements Met
+
+| Requirement | Implementation |
+|-------------|----------------|
+| Include license | `packages/htm-improved/LICENSE` |
+| State changes | `packages/htm-improved/CHANGES.md` |
+| Preserve copyright | Headers in all files |
+| Modification notices | CHANGES.md fulfills Section 4(b) |
+
+### 5.2 License Headers
+
+```javascript
 /**
- * htm v3.1.1 - Hyperscript Tagged Markup
- * https://github.com/developit/htm
- * 
- * Copyright 2018 Google Inc.
- * Licensed under the Apache License, Version 2.0
- * See ./htm-LICENSE for full license text
- * 
- * Vendored into async-htm-to-string for maintenance stability.
- * No modifications made to original source.
+ * Improved fork of htm with JSDoc types, security fixes, and better caching.
+ *
+ * Based on htm v3.1.1 - Hyperscript Tagged Markup (https://github.com/developit/htm)
+ * Original work Copyright 2018 Google Inc.
+ * Modifications Copyright 2026 Pelle Wessman
+ * Licensed under the Apache License, Version 2.0 - See ./LICENSE for full text
+ * See ./CHANGES.md for detailed list of modifications from original.
+ *
+ * @module @voxpelli/htm-improved
  */
 ```
 
-#### Step 4: Update imports
+### 5.3 Type Definition Attribution
 
-```javascript
-// lib/htm.js
-const htm = require('./vendor/htm.js');  // Changed from 'htm'
+```typescript
+/**
+ * Type definitions for @voxpelli/htm-improved
+ *
+ * Based on the original htm type definitions.
+ * Original work Copyright 2018 Google Inc.
+ * Modifications Copyright 2026 Pelle Wessman
+ *
+ * Licensed under the Apache License, Version 2.0
+ */
 ```
 
-#### Step 5: Update package.json
+---
+
+## 6. Test Coverage
+
+### 6.1 Ported Tests
+
+From `htm/test/index.test.mjs` (43 tests):
+- Basic parsing
+- Props handling
+- Spread props
+- Closing tags
+- Children
+- Special characters
+- HTML comments
+
+From `htm/test/statics-caching.test.mjs` (12 tests):
+- Template caching
+- `this` binding behavior
+- Staticness bits
+
+### 6.2 New Tests (7 tests)
+
+```javascript
+describe('vendored htm security', () => {
+  describe('trimNewlineWhitespace (ReDoS fix)', () => {
+    it('should handle pathological whitespace inputs efficiently');
+    it('should trim whitespace containing newlines correctly');
+    it('should preserve whitespace without newlines');
+  });
+});
+
+describe('vendored htm type compatibility', () => {
+  describe('h function receives correct types', () => {
+    it('should pass null for props when no props exist');
+    it('should pass object for props when props exist');
+    it('should pass string tag names correctly');
+    it('should pass function tag names correctly');
+  });
+});
+```
+
+### 6.3 Type Tests (tsd)
+
+`packages/htm-improved/index.test-d.ts` covers:
+- `htm.bind()` basic usage
+- `BoundHtm` return types
+- `HFunction` variations
+- Template literal interpolation
+- Component and dynamic tags
+- Fragments and text content
+- Nested elements
+- Boolean and spread attributes
+
+---
+
+## 7. Configuration Updates
+
+### 7.1 Root package.json
 
 ```json
 {
+  "license": "0BSD",
+  "workspaces": ["packages/*"],
   "dependencies": {
-    // Remove: "htm": "^3.0.4"
-    "@voxpelli/typed-utils": "^3.0.0",
-    "buffered-async-iterable": "^1.0.1",
-    "stringify-entities": "^4.0.3"
+    "@voxpelli/htm-improved": "workspace:*"
   }
 }
 ```
 
-#### Step 6: Update files list
+### 7.2 ESLint Configuration
 
-```json
+```javascript
+// eslint.config.mjs
 {
-  "files": [
-    "lib/**/*.js",
-    "lib/**/*.mjs",
-    "lib/vendor/htm-LICENSE"  // Add this
-  ]
+  files: ['packages/htm-improved/**/*.js', 'test/vendor-htm.spec.js'],
+  rules: {
+    'unicorn/no-null': 'off',
+  },
 }
 ```
 
-#### Step 7: Document in AGENTS.md
+### 7.3 Knip Configuration
 
-Add note about vendored dependency and update process.
+```json
+{
+  "workspaces": {
+    ".": {
+      "ignore": ["index.test-d.ts"]
+    },
+    "packages/htm-improved": {
+      "ignore": ["index.test-d.ts"]
+    }
+  }
+}
+```
 
----
+### 7.4 .gitignore
 
-## Hybrid Approach (Future Option)
-
-If community demand emerges, can later extract to standalone:
-
-1. Start with vendoring (immediate need)
-2. Monitor for other projects needing maintained htm
-3. Extract to @voxpelli/htm if demand exists
-4. Update this project to use the package
-
-This provides flexibility without premature optimization.
-
----
-
-## Appendix: Vendored Code Audit Checklist
-
-When vendoring, document for security reviewers:
-
-| Item | Status |
-|------|--------|
-| Source package | htm@3.1.1 |
-| Source verified | npm registry / GitHub release |
-| Integrity hash | sha512-983Vyg8N... |
-| License | Apache-2.0 |
-| Modifications | None |
-| Last reviewed | [DATE] |
-| Known vulnerabilities | None |
+```gitignore
+# Generated types
+*.d.ts
+!/packages/**/index.d.ts  # Allow workspace type definitions
+```
 
 ---
 
-## Conclusion
+## 8. Maintenance Guidelines
 
-For `async-htm-to-string`, **vendoring is the superior choice** because:
+### 8.1 When to Update
 
-1. It's simpler (no package to maintain)
-2. It's safer (eliminates supply chain dependency)
-3. It's smaller (reduces install size by 246KB)
-4. It's sufficient (only security patches needed)
+- **Security issues**: Immediately address any vulnerabilities
+- **Node.js compatibility**: Test with new Node versions
+- **TypeScript updates**: Update types if needed for new TS features
+- **Bug fixes**: Apply fixes for any discovered issues
 
-The standalone package approach would only make sense if maintaining multiple htm-dependent projects or wanting to serve the broader community, neither of which applies here.
+### 8.2 How to Update
+
+1. Make changes in `packages/htm-improved/lib/htm.js`
+2. Update `CHANGES.md` with modification details
+3. Update version in `packages/htm-improved/package.json` if publishing
+4. Run tests: `npm test`
+5. Update type tests if API changes
+
+### 8.3 Upstream Monitoring
+
+While htm is unlikely to be updated, occasionally check:
+- https://github.com/developit/htm/issues
+- https://github.com/developit/htm/pulls
+
+If significant upstream changes occur, evaluate whether to incorporate them.
+
+---
+
+## 9. Conclusion
+
+The `@voxpelli/htm-improved` workspace package successfully:
+
+1. ✅ **Eliminates stale dependency risk** - Full control over codebase
+2. ✅ **Fixes security vulnerability** - ReDoS replaced with O(n) function
+3. ✅ **Improves type safety** - JSDoc + tsd tests, `unknown` over `any`
+4. ✅ **Maintains compatibility** - 100% API compatible with htm v3.1.1
+5. ✅ **Documents everything** - Comprehensive CHANGES.md and comments
+6. ✅ **Enables future flexibility** - Can split to standalone repo if needed
+
+The workspace approach provides the benefits of both vendoring (full control) and standalone packages (clean separation, future publishability) while maintaining a single repository for easier development.

@@ -93,3 +93,14 @@ Same as `render()`, but asyncly returns a single string with the fully rendered 
 ### `generatorToString(somethingIterable)`
 
 Asyncly loops over an iterable (like eg. an async iterable) and concatenates together the result into a single string that it resolves to. The brains behind `renderToString()`.
+
+## License
+
+This project uses a dual-license structure:
+
+* **Main code**: [0BSD](https://spdx.org/licenses/0BSD.html) (BSD Zero Clause License) - essentially public domain
+* **Vendored htm**: [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html) - see `lib/vendor/htm-LICENSE`
+
+The [htm](https://github.com/developit/htm) library (Copyright 2018 Google Inc.) is vendored in `lib/vendor/` with modifications documented in `lib/vendor/htm-CHANGES.md`. The Apache 2.0 license applies to this vendored code.
+
+For most use cases, you can treat this package as permissively licensed. The Apache 2.0 portions require attribution if you redistribute the source code.

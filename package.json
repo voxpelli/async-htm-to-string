@@ -52,7 +52,8 @@
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "lib/**/*.mjs",
-    "lib/vendor/htm-LICENSE"
+    "lib/vendor/htm-LICENSE",
+    "lib/vendor/htm-CHANGES.md"
   ],
   "scripts": {
     "build:0-clean": "run-s clean",

@@ -116,5 +116,9 @@
     "type-coverage": "^2.29.7",
     "typescript": "~5.9.3",
     "validate-conventional-commit": "^1.0.4"
+  },
+  "tsd": {
+    "directory": ".",
+    "testFilePattern": "{index,lib/vendor/htm}.test-d.ts"
   }
 }

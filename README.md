@@ -4,9 +4,9 @@ Renders a [`htm`](https://www.npmjs.com/package/htm) tagged template asyncly int
 
 [![npm version](https://img.shields.io/npm/v/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
 [![npm downloads](https://img.shields.io/npm/dm/async-htm-to-string.svg?style=flat)](https://www.npmjs.com/package/async-htm-to-string)
-[![Module type: CJS+ESM](https://img.shields.io/badge/module%20type-cjs%2Besm-brightgreen)](https://github.com/voxpelli/badges-cjs-esm)
 [![Types in JS](https://img.shields.io/badge/types_in_js-yes-brightgreen)](https://github.com/voxpelli/types-in-js)
 [![neostandard javascript style](https://img.shields.io/badge/code_style-neostandard-7fffff?style=flat&labelColor=ff80ff)](https://github.com/neostandard/neostandard)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/voxpelli/async-htm-to-string)
 [![Follow @voxpelli@mastodon.social](https://img.shields.io/mastodon/follow/109247025527949675?domain=https%3A%2F%2Fmastodon.social&style=social)](https://mastodon.social/@voxpelli)
 
 ## Usage

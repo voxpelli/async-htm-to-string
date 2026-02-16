@@ -2,10 +2,10 @@
   "extends": "./tsconfig",
   "include": [],
   "files": [
-    "lib/htm.mjs",
+    "lib/htm.js",
     "lib/render.js",
-    "lib/render-utils.mjs",
-    "lib/utils.mjs"
+    "lib/render-utils.js",
+    "lib/utils.js"
   ],
   "exclude": ["test/**/*.js", "typetests/**/*.ts", "index.js"],
   "compilerOptions": {

@@ -7,7 +7,7 @@
   "description": "Renders a htm tagged template asyncly into a string",
   "homepage": "http://github.com/voxpelli/async-htm-to-string",
   "author": "Pelle Wessman <pelle@kodfabrik.se> (http://kodfabrik.se/)",
-  "license": "0BSD",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/voxpelli/async-htm-to-string.git"
@@ -21,7 +21,7 @@
     }
   },
   "engines": {
-    "node": "^22.13.0 || >=24.0.0",
+    "node": "^20.19.0 || ^22.13.0 || >=24",
     "typescript": ">=5.8"
   },
   "keywords": [
@@ -38,41 +38,42 @@
     "ssr"
   ],
   "files": [
-    "index.d.ts.map",
     "index.d.ts",
     "index.js",
     "lib/**/*.d.ts.map",
     "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "lib/**/*.mjs"
+    "lib/**/*.js"
   ],
   "scripts": {
-    "build:0-clean": "run-s clean",
-    "build:1-declaration": "tsc -p declaration.tsconfig.json",
-    "build:2-types": "node scripts/patch-types.mjs",
     "build": "run-s build:*",
     "build-for-test": "run-s build",
+    "build:0-clean": "run-s clean",
+    "build:1-declaration": "tsc -p declaration.tsconfig.json",
+    "check": "run-s check:*",
+    "check-workspaces": "npm run --workspaces build-for-check --if-present && npm run --workspaces check-when-vendored --if-present",
     "check:0": "run-s clean build",
-    "check:1:installed-check": "installed-check",
+    "check:1": "run-p check:1:*",
+    "check:1:installed-check": "installed-check --engine-check --version-check -i tstyche -i @voxpelli/tstyche-reporters -i typescript",
     "check:1:knip": "knip",
     "check:1:lint": "eslint --report-unused-disable-directives .",
     "check:1:skypack": "package-check",
     "check:1:tsc": "tsc",
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*' --ignore-files 'typetests/*'",
-    "check:1": "run-p check:1:*",
     "check:2": "run-s build && tstyche --reporters ./node_modules/@voxpelli/tstyche-reporters/lib/tstyche-mocha-reporter.js,summary && run-s clean",
-    "check": "run-s check:*",
-    "clean:declarations-top": "rm -rf $(find . -maxdepth 1 -type f -name '*.d.ts*' ! -name 'index.d.ts')",
-    "clean:declarations-lib": "rm -rf $(find lib -type f -name '*.d.ts*' ! -name '*-types.d.ts')",
     "clean": "run-p clean:*",
+    "clean:declarations-lib": "rm -rf $(find lib -type f -name '*.d.ts*' ! -name '*-types.d.ts')",
+    "clean:declarations-top": "rm -rf $(find . -maxdepth 1 -type f -name '*.d.ts*' ! -name 'index.d.ts')",
+    "clean:workspaces": "npm run --workspaces clean --if-present",
+    "dev:workspaces": "npm run --workspaces dev --if-present",
     "prepare": "husky",
     "prepublishOnly": "run-s build",
-    "test-ci": "run-s test:*",
     "test": "run-s check test:*",
-    "watch:build": "nodemon -x \"run-s build\"",
-    "watch": "run-p watch:*",
+    "test-ci": "run-s test:* test-workspaces",
+    "test-workspaces": "npm run --workspaces build-for-check --if-present && npm run --silent --workspaces test-ci --if-present",
     "test:node": "node --test --experimental-test-coverage test/**/*.spec.js",
     "test:tstyche": "run-s build && tstyche --target \"$(jq -r \".engines.typescript\" package.json)\" --reporters ./node_modules/@voxpelli/tstyche-reporters/lib/tstyche-mocha-reporter.js,summary && run-s clean",
+    "watch": "run-p watch:*",
+    "watch:build": "nodemon -x \"run-s build\"",
     "watch:tstyche": "nodemon -e ts -x \"run-s test:tstyche\""
   },
   "dependencies": {

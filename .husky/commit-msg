@@ -1,2 +1,0 @@
-
-npx --no validate-conventional-commit < .git/COMMIT_EDITMSG

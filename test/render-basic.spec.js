@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { render } from '../lib/render.js';
+import { render } from '../index.js';
 import { ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('render() basic', () => {

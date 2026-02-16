@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { html } from '../lib/htm.js';
+import { html } from '../index.js';
 import { ELEMENT_ARRAY_CHILD_FIXTURE, ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('html``', () => {

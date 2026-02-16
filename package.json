@@ -42,7 +42,10 @@
     "index.js",
     "lib/**/*.d.ts.map",
     "lib/**/*.d.ts",
-    "lib/**/*.js"
+    "lib/**/*.d.mts.map",
+    "lib/**/*.d.mts",
+    "lib/**/*.js",
+    "lib/**/*.mjs"
   ],
   "scripts": {
     "build": "run-s build:*",
@@ -61,7 +64,7 @@
     "check:1:type-coverage": "type-coverage --detail --strict --at-least 99 --ignore-files 'test/*' --ignore-files 'typetests/*'",
     "check:2": "run-s build && tstyche --reporters ./node_modules/@voxpelli/tstyche-reporters/lib/tstyche-mocha-reporter.js,summary && run-s clean",
     "clean": "run-p clean:*",
-    "clean:declarations-lib": "rm -rf $(find lib -type f -name '*.d.ts*' ! -name '*-types.d.ts')",
+    "clean:declarations-lib": "rm -rf $(find lib -type f \\( -name '*.d.ts*' -o -name '*.d.mts*' \\) ! -name '*-types.d.ts')",
     "clean:declarations-top": "rm -rf $(find . -maxdepth 1 -type f -name '*.d.ts*' ! -name 'index.d.ts')",
     "clean:workspaces": "npm run --workspaces clean --if-present",
     "dev:workspaces": "npm run --workspaces dev --if-present",
@@ -70,7 +73,7 @@
     "test": "run-s check test:*",
     "test-ci": "run-s test:* test-workspaces",
     "test-workspaces": "npm run --workspaces build-for-check --if-present && npm run --silent --workspaces test-ci --if-present",
-    "test:node": "node --test --experimental-test-coverage test/**/*.spec.js",
+    "test:node": "node --test --experimental-test-coverage test/*.spec.js",
     "test:tstyche": "run-s build && tstyche --target \"$(jq -r \".engines.typescript\" package.json)\" --reporters ./node_modules/@voxpelli/tstyche-reporters/lib/tstyche-mocha-reporter.js,summary && run-s clean",
     "watch": "run-p watch:*",
     "watch:build": "nodemon -x \"run-s build\"",

@@ -1,23 +1,8 @@
-/// <reference types="node" />
-/// <reference types="mocha" />
-/// <reference types="chai" />
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-'use strict';
-
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
-const should = chai.should();
-
-const {
-  html,
-} = require('../lib/htm');
-
-const {
-  ELEMENT_ARRAY_CHILD_FIXTURE,
-  ELEMENT_FIXTURE,
-} = require('./fixtures');
+import { html } from '../lib/htm.mjs';
+import { ELEMENT_ARRAY_CHILD_FIXTURE, ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('html``', () => {
   it('should handle complex example', () => {
@@ -54,8 +39,8 @@ describe('html``', () => {
 
     const result = html`<div class="${['prop1', 'prop2'].join(' ')}" data-foo="123">  <img src="#" /> <${bar}>    <${foo}>YEA&H!${danger}</${foo}></${bar}></div>`;
 
-    should.exist(result);
-    result.should.deep.equal(fixture);
+    assert.ok(result);
+    assert.deepStrictEqual(result, fixture);
   });
 
   it('should handle array content', () => {
@@ -64,14 +49,14 @@ describe('html``', () => {
       html`<li>Two</li>`,
     ].flat();
     const result = html`<ul>${list}</ul>`;
-    should.exist(result);
-    result.should.deep.equal(ELEMENT_ARRAY_CHILD_FIXTURE);
+    assert.ok(result);
+    assert.deepStrictEqual(result, ELEMENT_ARRAY_CHILD_FIXTURE);
   });
 
   it('should handle simple root example', () => {
     const result = html`<div />`;
-    should.exist(result);
-    result.should.deep.equal(ELEMENT_FIXTURE);
+    assert.ok(result);
+    assert.deepStrictEqual(result, ELEMENT_FIXTURE);
   });
 
   it('should handle multi root example', () => {
@@ -81,13 +66,13 @@ describe('html``', () => {
       { type: 'div', props: {}, children: [] },
     ];
 
-    html`<div /><div />`.should.deep.equal(fixture);
+    assert.deepStrictEqual(html`<div /><div />`, fixture);
   });
 
   it('should handle text root example', () => {
     /** @type {import('..').HtmlMethodResult} */
     const fixture = 'foo';
-    html`foo`.should.deep.equal(fixture);
+    assert.strictEqual(html`foo`, fixture);
   });
 
   it('should handle combined root example', () => {
@@ -96,26 +81,35 @@ describe('html``', () => {
       { type: 'div', props: {}, children: [] },
       'foo',
     ];
-    html`<div />foo`.should.deep.equal(fixture);
+    assert.deepStrictEqual(html`<div />foo`, fixture);
   });
 
   it('should handle multi text root example', () => {
     /** @type {import('..').HtmlMethodResult} */
     const fixture = ['foo', 'bar'];
-    html`${'foo'}bar`.should.deep.equal(fixture);
+    assert.deepStrictEqual(html`${'foo'}bar`, fixture);
   });
 
-  it('should handle number root value', () => { html`${123}`.should.equal('123'); });
+  it('should handle number root value', () => {
+    assert.strictEqual(html`${123}`, '123');
+  });
 
-  it('should handle undefined root example', () => { html`${undefined}`.should.equal(''); });
+  it('should handle undefined root example', () => {
+    assert.strictEqual(html`${undefined}`, '');
+  });
 
-  // @ts-ignore
-  // eslint-disable-next-line unicorn/no-null
-  it('should handle null root example', () => { html`${null}`.should.equal(''); });
+  it('should handle null root example', () => {
+    // eslint-disable-next-line unicorn/no-null
+    assert.strictEqual(html`${null}`, '');
+  });
 
-  it('should handle false root example', () => { html`${false}`.should.equal(''); });
+  it('should handle false root example', () => {
+    assert.strictEqual(html`${false}`, '');
+  });
 
-  it('should handle 0 root example', () => { html`${0}`.should.equal('0'); });
+  it('should handle 0 root example', () => {
+    assert.strictEqual(html`${0}`, '0');
+  });
 
   it('should handle top level array content', () => {
     /** @type {import('..').HtmlMethodResult} */
@@ -130,29 +124,28 @@ describe('html``', () => {
       { type: 'span', props: {}, children: [] },
     ];
 
-    html`${fixture1}<span />`.should.deep.equal(fixture2);
+    assert.deepStrictEqual(html`${fixture1}<span />`, fixture2);
   });
 
   it('should throw on invalid root type', () => {
-    should.Throw(() => { html`${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
-    should.Throw(() => { html`${{}}`; }, TypeError, 'Resolved to invalid type of object value "type" property: undefined');
-    // @ts-ignore
-    should.Throw(() => { html`${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
-    // @ts-ignore
-    should.Throw(() => { html`${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
-    // @ts-ignore
-    should.Throw(() => { html`${[Symbol.asyncIterator, 'foo']}`; }, TypeError, 'Resolved to invalid value type: symbol');
+    assert.throws(() => { html`${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
+    assert.throws(() => { html`${{}}`; }, TypeError, 'Resolved to invalid type of object value "type" property: undefined');
+    assert.throws(() => { html`${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
+    assert.throws(() => { html`${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
+    assert.throws(() => { html`${[Symbol.asyncIterator, 'foo']}`; }, TypeError, 'Resolved to invalid value type: symbol');
   });
 
   it('should throw on promise resolving to array nested', async () => {
-    await html`${Promise.resolve(['a', 'b'])}`.should.be.rejectedWith(TypeError, 'Unexpected nested array value found');
+    await assert.rejects(
+      () => html`${Promise.resolve(['a', 'b'])}`,
+      TypeError,
+      'Unexpected nested array value found'
+    );
   });
 
   it('should throw on multi root type', () => {
-    should.Throw(() => { html`foo${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
-    // @ts-ignore
-    should.Throw(() => { html`foo${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
-    // @ts-ignore
-    should.Throw(() => { html`foo${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
+    assert.throws(() => { html`foo${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
+    assert.throws(() => { html`foo${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
+    assert.throws(() => { html`foo${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
   });
 });

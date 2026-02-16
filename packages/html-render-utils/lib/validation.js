@@ -19,7 +19,7 @@ const validatedTagCache = new Map();
  * @param {string} tag
  * @returns {boolean}
  */
-const isTagValid = (tag) => {
+export const isTagValid = (tag) => {
   const cached = validatedTagCache.get(tag);
 
   if (cached !== undefined) return cached;
@@ -35,7 +35,7 @@ const validatedAttributeNameCache = new Map();
  * @param {string} name
  * @returns {boolean}
  */
-const isAttributeNameValid = (name) => {
+export const isAttributeNameValid = (name) => {
   const cached = validatedAttributeNameCache.get(name);
 
   if (cached !== undefined) return cached;
@@ -45,7 +45,7 @@ const isAttributeNameValid = (name) => {
   return result;
 };
 
-const omittedCloseTags = /** @type {const} */ ({
+export const omittedCloseTags = /** @type {const} */ ({
   area: true,
   base: true,
   br: true,
@@ -62,9 +62,3 @@ const omittedCloseTags = /** @type {const} */ ({
   track: true,
   wbr: true,
 });
-
-module.exports = {
-  isTagValid,
-  isAttributeNameValid,
-  omittedCloseTags,
-};

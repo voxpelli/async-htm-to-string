@@ -3,7 +3,7 @@
   "extends": "./tsconfig",
   "files": [],
   "exclude": [
-    "test/**/*.js"
+    "test/**/*.js","typetests/**/*.ts"
   ],
   "compilerOptions": {
     "declaration": true,

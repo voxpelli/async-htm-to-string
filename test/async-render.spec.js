@@ -1,19 +1,7 @@
-/// <reference types="node" />
-/// <reference types="mocha" />
-/// <reference types="chai" />
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-'use strict';
-
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
-chai.should();
-
-const {
-  html,
-  renderToString,
-} = require('..');
+import { html, renderToString } from '../index.js';
 
 const BadAsync = async () => {
   return 123; // Valid, it's converted to string
@@ -27,13 +15,12 @@ describe('async support', () => {
   it('should render async function component', async () => {
     /** @type {import('..').SimpleRenderableElementFunction} */
     const AsyncComp = async (_props, _children) => {
-      // simulate work
       await new Promise(resolve => setTimeout(resolve, 1));
       return html`<div>Async Content</div>`;
     };
 
-    await renderToString(html`<${AsyncComp} />`)
-      .should.eventually.equal('<div>Async Content</div>');
+    const result = await renderToString(html`<${AsyncComp} />`);
+    assert.strictEqual(result, '<div>Async Content</div>');
   });
 
   it('should render async function component with children', async () => {
@@ -42,31 +29,30 @@ describe('async support', () => {
       return html`<div>${children}</div>`;
     };
 
-    await renderToString(html`<${AsyncComp}>Content</${AsyncComp}>`)
-      .should.eventually.equal('<div>Content</div>');
+    const result = await renderToString(html`<${AsyncComp}>Content</${AsyncComp}>`);
+    assert.strictEqual(result, '<div>Content</div>');
   });
 
   it('should render direct Promise child', async () => {
     const promise = Promise.resolve('Promise Content');
-    // We wrap it in a div or just render it directly
-    await renderToString(html`${promise}`)
-      .should.eventually.equal('Promise Content');
+    const result = await renderToString(html`${promise}`);
+    assert.strictEqual(result, 'Promise Content');
   });
 
   it('should render Promise child returning element', async () => {
     const promise = Promise.resolve(html`<span>Delayed</span>`);
-    await renderToString(html`<div>${promise}</div>`)
-      .should.eventually.equal('<div><span>Delayed</span></div>');
+    const result = await renderToString(html`<div>${promise}</div>`);
+    assert.strictEqual(result, '<div><span>Delayed</span></div>');
   });
 
-  it('should handle async component returning non-string/element (error)', async () => {
-    await renderToString(html`<${BadAsync} />`)
-      .should.eventually.equal('123');
+  it('should handle async component returning number (converted to string)', async () => {
+    const result = await renderToString(html`<${BadAsync} />`);
+    assert.strictEqual(result, '123');
   });
 
   it('should handle async component returning string', async () => {
-    await renderToString(html`<${StringAsync} />`)
-      .should.eventually.equal('Just String');
+    const result = await renderToString(html`<${StringAsync} />`);
+    assert.strictEqual(result, 'Just String');
   });
 
   it('should handle async component returning array of promises', async () => {
@@ -79,8 +65,8 @@ describe('async support', () => {
       ];
     };
 
-    await renderToString(html`<div><${AsyncComp} /></div>`)
-      .should.eventually.equal('<div>AB</div>');
+    const result = await renderToString(html`<div><${AsyncComp} /></div>`);
+    assert.strictEqual(result, '<div>AB</div>');
   });
 
   it('should throw when skipStringEscape is used with non-string result', async () => {
@@ -90,7 +76,10 @@ describe('async support', () => {
       children: [],
       skipStringEscape: true,
     };
-    // @ts-ignore
-    await renderToString(element).should.be.rejectedWith(TypeError, 'skipStringEscape can only be used with string results');
+    await assert.rejects(
+      () => renderToString(element),
+      TypeError,
+      'skipStringEscape can only be used with string results'
+    );
   });
 });

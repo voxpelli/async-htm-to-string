@@ -60,7 +60,9 @@ const renderableElement = html`<div>${content}</div>`;
 
 ### `rawHtml / rawHtml(rawString)`
 
-If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with the
+If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with the raw string.
+
+> **Security Warning:** Never pass user-controlled or untrusted content to `rawHtml`. It bypasses HTML escaping and can lead to XSS if used with untrusted input. Only use `rawHtml` for trusted, pre-escaped content that you control.
 
 ```javascript
 const renderableElement = rawHtml`<div>&amp;${'&quot;'}</div>`;

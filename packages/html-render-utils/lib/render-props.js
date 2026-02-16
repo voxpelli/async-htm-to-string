@@ -3,6 +3,10 @@ import { stringifyEntities } from 'stringify-entities';
 import { isAttributeNameValid } from './validation.js';
 
 /**
+ * Portions of this file are derived from React's DOMMarkupOperations:
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * Licensed under the MIT License.
+ *
  * Renders HTML element attributes to strings.
  * Based on React's DOMMarkupOperations.
  *

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { html } from '../lib/htm.mjs';
+import { html } from '../lib/htm.js';
 import { ELEMENT_ARRAY_CHILD_FIXTURE, ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('html``', () => {
@@ -128,24 +128,23 @@ describe('html``', () => {
   });
 
   it('should throw on invalid root type', () => {
-    assert.throws(() => { html`${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
-    assert.throws(() => { html`${{}}`; }, TypeError, 'Resolved to invalid type of object value "type" property: undefined');
-    assert.throws(() => { html`${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
-    assert.throws(() => { html`${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
-    assert.throws(() => { html`${[Symbol.asyncIterator, 'foo']}`; }, TypeError, 'Resolved to invalid value type: symbol');
+    assert.throws(() => { html`${true}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: boolean' });
+    assert.throws(() => { html`${{}}`; }, { name: 'TypeError', message: 'Resolved to invalid type of object value "type" property: undefined' });
+    assert.throws(() => { html`${Symbol.asyncIterator}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: symbol' });
+    assert.throws(() => { html`${() => {}}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: function' });
+    assert.throws(() => { html`${[Symbol.asyncIterator, 'foo']}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: symbol' });
   });
 
   it('should throw on promise resolving to array nested', async () => {
     await assert.rejects(
       () => html`${Promise.resolve(['a', 'b'])}`,
-      TypeError,
-      'Unexpected nested array value found'
+      { name: 'TypeError', message: 'Unexpected nested array value found' }
     );
   });
 
   it('should throw on multi root type', () => {
-    assert.throws(() => { html`foo${true}`; }, TypeError, 'Resolved to invalid value type: boolean');
-    assert.throws(() => { html`foo${Symbol.asyncIterator}`; }, TypeError, 'Resolved to invalid value type: symbol');
-    assert.throws(() => { html`foo${() => {}}`; }, TypeError, 'Resolved to invalid value type: function');
+    assert.throws(() => { html`foo${true}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: boolean' });
+    assert.throws(() => { html`foo${Symbol.asyncIterator}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: symbol' });
+    assert.throws(() => { html`foo${() => {}}`; }, { name: 'TypeError', message: 'Resolved to invalid value type: function' });
   });
 });

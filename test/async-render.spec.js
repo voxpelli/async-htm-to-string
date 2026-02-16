@@ -78,8 +78,7 @@ describe('async support', () => {
     };
     await assert.rejects(
       () => renderToString(element),
-      TypeError,
-      'skipStringEscape can only be used with string results'
+      { name: 'TypeError', message: 'skipStringEscape can only be used with string results' }
     );
   });
 });

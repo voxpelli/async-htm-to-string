@@ -41,16 +41,14 @@ describe('renderToString()', () => {
     it('should throw on invalid tag name', async () => {
       await assert.rejects(
         () => renderToString(html`<-div></-div>`),
-        Error,
-        'Invalid tag name: -div'
+        { name: 'Error', message: 'Invalid tag name: -div' }
       );
     });
 
     it('should throw on invalid tag type', async () => {
       await assert.rejects(
         () => renderToString(ELEMENT_FIXTURE_INVALID_TYPE),
-        Error,
-        'Invalid element type: boolean'
+        { name: 'TypeError', message: 'Invalid element type: boolean' }
       );
     });
 
@@ -118,16 +116,14 @@ describe('renderToString()', () => {
     it('should throw on invalid child type', async () => {
       await assert.rejects(
         () => renderToString(html`<div>${true}</div>`),
-        Error,
-        'Invalid render item type: boolean'
+        { name: 'Error', message: 'Invalid render item type: boolean' }
       );
     });
 
     it('should throw on invalid child object', async () => {
       await assert.rejects(
         () => renderToString(html`<div>${{ abc: 123 }}</div>`),
-        Error,
-        'Not an element definition. Missing type in: {"abc":123}'
+        { name: 'TypeError', message: 'Not an element definition. Missing type in: {"abc":123}' }
       );
     });
 
@@ -195,8 +191,7 @@ describe('renderToString()', () => {
     it('should throw on invalid property name', async () => {
       await assert.rejects(
         () => renderToString(html`<div -cool="123"></div>`),
-        Error,
-        'Invalid attribute name: -cool'
+        { name: 'Error', message: 'Invalid attribute name: -cool' }
       );
     });
 
@@ -265,8 +260,9 @@ describe('renderToString()', () => {
       const consoleErrorMock = mock.method(console, 'error', () => {});
 
       // eslint-disable-next-line unicorn/no-null
-      await renderToString(html`<div foo="${() => {}}" bar="${null}" abc="${undefined}" xyz="${{}}"></div>`);
+      const result = await renderToString(html`<div foo="${() => {}}" bar="${null}" abc="${undefined}" xyz="${{}}"></div>`);
 
+      assert.strictEqual(result, '<div></div>');
       assert.strictEqual(consoleErrorMock.mock.calls.length, 2);
       assert.deepStrictEqual(consoleErrorMock.mock.calls[0]?.arguments, ['Unexpected prop value type:', 'function']);
       assert.deepStrictEqual(consoleErrorMock.mock.calls[1]?.arguments, ['Unexpected prop value type:', 'object']);

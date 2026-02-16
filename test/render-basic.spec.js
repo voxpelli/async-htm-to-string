@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-import { render } from '../lib/render.mjs';
+import { render } from '../lib/render.js';
 import { ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('render() basic', () => {
@@ -9,8 +9,7 @@ describe('render() basic', () => {
     await assert.rejects(
       // eslint-disable-next-line no-unused-vars, no-empty
       async () => { for await (const _ of render()) {} },
-      TypeError,
-      'Expected an argument'
+      { name: 'TypeError', message: 'Expected an argument' }
     );
   });
 
@@ -18,8 +17,7 @@ describe('render() basic', () => {
     await assert.rejects(
       // eslint-disable-next-line no-unused-vars, no-empty, unicorn/no-null
       async () => { for await (const _ of render(null)) {} },
-      TypeError,
-      'Expected a non-falsy argument, got: null'
+      { name: 'TypeError', message: 'Expected a non-falsy argument, got: null' }
     );
   });
 
@@ -27,8 +25,7 @@ describe('render() basic', () => {
     await assert.rejects(
       // eslint-disable-next-line no-unused-vars, no-empty
       async () => { for await (const _ of render('')) {} },
-      TypeError,
-      'Expected a non-falsy argument, got: '
+      { name: 'TypeError', message: 'Expected a non-falsy argument, got: ' }
     );
   });
 
@@ -36,8 +33,7 @@ describe('render() basic', () => {
     await assert.rejects(
       // eslint-disable-next-line no-unused-vars, no-empty
       async () => { for await (const _ of render(true)) {} },
-      TypeError,
-      'Expected a string or an object, got: boolean'
+      { name: 'TypeError', message: 'Expected a string or an object, got: boolean' }
     );
   });
 

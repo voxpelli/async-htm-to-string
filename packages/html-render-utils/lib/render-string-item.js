@@ -16,7 +16,7 @@ export async function * renderStringItem (item, renderChildren) {
 
   const tag = type.toLowerCase();
 
-  if (type in omittedCloseTags) {
+  if (Object.hasOwn(omittedCloseTags, tag)) {
     yield `<${tag}`;
     yield * renderProps(props);
     yield ' />';

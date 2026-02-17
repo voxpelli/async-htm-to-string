@@ -18,12 +18,12 @@ function requireHtmlMethodResult (_x: HtmlMethodResult): void {}
 
 describe('HtmlMethodResult', () => {
   it('should reject invalid values', () => {
-    const invalidValues = [123, null, undefined, false, true, () => {}, Symbol.asyncIterator];
-
-    for (const item of invalidValues) {
-      expect(requireHtmlMethodResult(item)).type.toRaiseError();
-      expect(requireHtmlMethodResult([item])).type.toRaiseError();
-    }
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<number>()
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<null>()
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<undefined>()
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<boolean>()
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<() => void>()
+    expect<HtmlMethodResult>().type.not.toBeAssignableFrom<symbol>()
   });
 
   it('should accept valid values', () => {

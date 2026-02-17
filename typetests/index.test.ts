@@ -27,10 +27,10 @@ describe('HtmlMethodResult', () => {
   });
 
   it('should accept valid values', () => {
-    expect('foo').type.toBeAssignableTo<HtmlMethodResult>();
-    expect({ type: 'div', props: {}, children: [] }).type.toBeAssignableTo<HtmlMethodResult>();
-    expect('').type.toBeAssignableTo<HtmlMethodResult>();
-    expect([{ type: 'div', props: {}, children: [] }, 'foo']).type.toBeAssignableTo<HtmlMethodResult>();
+    expect<HtmlMethodResult>().type.toBeAssignableFrom('foo')
+    expect<HtmlMethodResult>().type.toBeAssignableFrom({ type: 'div', props: {}, children: [] })
+    expect<HtmlMethodResult>().type.toBeAssignableFrom('')
+    expect<HtmlMethodResult>().type.toBeAssignableFrom([{ type: 'div', props: {}, children: [] }, 'foo'])
   });
 
   it('should infer type from html tag', () => {

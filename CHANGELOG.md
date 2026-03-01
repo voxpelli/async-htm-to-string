@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.0.1](https://github.com/voxpelli/async-htm-to-string/compare/v5.0.0...v5.0.1) (2026-03-01)
+
+
+### 🩹 Fixes
+
+* accept HtmlMethodResult as html template interpolation value ([a0f3a26](https://github.com/voxpelli/async-htm-to-string/commit/a0f3a268f15ba4a8bc745b97bdd0873fdd168a1a))
+* accept null as html template interpolation value ([dd959ec](https://github.com/voxpelli/async-htm-to-string/commit/dd959ec39590782f98b6f8b82a5107334fe40be4))
+* accept typed Set/Map as prop values ([3dfcf42](https://github.com/voxpelli/async-htm-to-string/commit/3dfcf428561e5de5b776ab1b16b46b82eb397ca4))
+
 ## [5.0.0](https://github.com/voxpelli/async-htm-to-string/compare/v4.0.0...v5.0.0) (2026-03-01)
 
 

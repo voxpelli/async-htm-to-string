@@ -102,7 +102,6 @@ describe('html``', () => {
 
   it('should handle undefined root example', () => { assert.equal(html`${undefined}`, ''); });
 
-  // @ts-ignore
   // eslint-disable-next-line unicorn/no-null
   it('should handle null root example', () => { assert.equal(html`${null}`, ''); });
 

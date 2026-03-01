@@ -211,6 +211,10 @@ describe('HtmlTemplateValue assignability', () => {
   test('should not accept Promise<symbol>', () => {
     expect<HtmlTemplateValue>().type.not.toBeAssignableFrom(Promise.resolve(Symbol('x')) as Promise<symbol>);
   });
+
+  test('should accept null for conditional rendering pattern', () => {
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(null);
+  });
 });
 
 describe('html template composition', () => {
@@ -233,6 +237,12 @@ describe('html template composition', () => {
     const component: RenderableElementFunction<{}> = (_props, children) => html`<span>${children}</span>`;
     const result: HtmlMethodResult = html`<${component}>child<//>`;
     expect(html`<div>${result}</div>`).type.toBe<HtmlMethodResult>();
+  });
+
+  test('should accept null for conditional rendering', () => {
+    const show = true;
+    const content: HtmlMethodResult = html`<span>visible</span>`;
+    expect(html`<div>${show ? content : null}</div>`).type.toBe<HtmlMethodResult>();
   });
 });
 

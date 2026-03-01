@@ -126,7 +126,6 @@ describe('renderToString()', () => {
     });
 
     it('should handle null child', async () => {
-      // @ts-ignore
       // eslint-disable-next-line unicorn/no-null
       assert.equal(await renderToString(html`<div>${null}</div>`), '<div></div>');
     });

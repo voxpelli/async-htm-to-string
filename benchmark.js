@@ -1,7 +1,7 @@
 /* eslint-disable camelcase, n/no-sync */
 import { bench, boxplot, do_not_optimize, group, run, summary } from 'mitata';
 
-import { html, rawHtml, render, renderToString, renderToStringSync } from './index.mjs';
+import { html, rawHtml, render, renderToString, renderToStringSync } from './index.js';
 import { generatorToString } from './lib/utils.js';
 
 // Simulate the old renderToString (pre-optimization): always goes through
@@ -41,12 +41,12 @@ const syncWithRawHtml = () => html`
   </div>
 `;
 
-/** @type {import('./index.mjs').SimpleRenderableElementFunction} */
+/** @type {import('./index.js').SimpleRenderableElementFunction} */
 const SyncComponent = (_props, children) => html`<div class="wrapper">${children}</div>`;
 
 const withSyncComponent = () => html`<${SyncComponent}><span>Child</span></${SyncComponent}>`;
 
-/** @type {import('./index.mjs').SimpleRenderableElementFunction} */
+/** @type {import('./index.js').SimpleRenderableElementFunction} */
 const AsyncComponent = async (_props, children) => html`<div class="wrapper">${children}</div>`;
 
 const withAsyncComponent = () => html`<${AsyncComponent}><span>Child</span></${AsyncComponent}>`;

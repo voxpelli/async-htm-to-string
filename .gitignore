@@ -1,4 +1,5 @@
 # Basic ones
+/.claude
 /coverage
 /docs
 /node_modules
@@ -12,11 +13,5 @@
 # Generated types
 *.d.ts
 *.d.ts.map
-*.d.mts
-*.d.mts.map
 !/lib/**/*-types.d.ts
 !/index.d.ts
-!/index.d.mts
-
-# Library specific ones
-/lib/render.mjs

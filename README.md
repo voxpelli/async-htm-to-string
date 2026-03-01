@@ -18,7 +18,7 @@ npm install async-htm-to-string
 ```
 
 ```javascript
-const { html, renderToString } = require('async-htm-to-string');
+import { html, renderToString } from 'async-htm-to-string';
 
 const customTag = ({ prefix }, children) => html`<div>${prefix}-${children}</div>`;
 const dynamicContent = 'bar';
@@ -60,7 +60,10 @@ const renderableElement = html`<div>${content}</div>`;
 
 ### `rawHtml / rawHtml(rawString)`
 
-If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with the
+If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with a string.
+
+> **Security Warning:** Never pass user-controlled or untrusted content to `rawHtml`.
+> It bypasses HTML escaping and can lead to XSS if used with untrusted input.
 
 ```javascript
 const renderableElement = rawHtml`<div>&amp;${'&quot;'}</div>`;
@@ -95,7 +98,7 @@ Synchronous version of `renderToString()` that returns a `string` directly inste
 Best suited for templates known to be fully synchronous:
 
 ```javascript
-const { html, renderToStringSync } = require('async-htm-to-string');
+import { html, renderToStringSync } from 'async-htm-to-string';
 
 // Returns string directly, no await needed
 const result = renderToStringSync(html`<div class="fast">Hello</div>`);
@@ -114,19 +117,19 @@ The optimization works at multiple levels:
 
 ### Benchmark results
 
-Measured with [mitata](https://github.com/evanwashere/mitata) on Node.js 22 (Apple M1), with `--expose-gc` and `.gc('inner')` for consistent GC behavior. "Legacy" is the pre-optimization async generator path. See [`benchmark.mjs`](./benchmark.mjs) for the full source.
+Measured with [mitata](https://github.com/evanwashere/mitata) on Node.js 22 (Apple M1), with `--expose-gc` and `.gc('inner')` for consistent GC behavior. "Legacy" is the pre-optimization async generator path. See [`benchmark.js`](./benchmark.js) for the full source.
 
 | Template | Legacy | `renderToString` | `renderToStringSync` |
 |---|---|---|---|
-| Simple (`<div>Hello</div>`) | 91 µs | **625 ns** (146x faster) | **500 ns** (183x faster) |
-| Medium (nested HTML, props, lists) | 399 µs | **3.7 µs** (109x faster) | **3.4 µs** (118x faster) |
-| rawHtml child | 19 µs | **938 ns** (20x faster) | **790 ns** (24x faster) |
-| Sync function component | 1.73 µs | 1.67 µs (1.04x) | **974 ns** (1.8x faster) |
-| Async function component | 1.66 µs | 1.92 µs | n/a |
+| Simple (`<div>Hello</div>`) | 57 µs | **465 ns** (123x faster) | **360 ns** (158x faster) |
+| Medium (nested HTML, props, lists) | 165 µs | **3.9 µs** (43x faster) | **3.1 µs** (54x faster) |
+| rawHtml child | 7.3 µs | **674 ns** (11x faster) | **568 ns** (13x faster) |
+| Sync function component | 1.42 µs | 1.48 µs (1.0x) | **769 ns** (1.8x faster) |
+| Async function component | 1.45 µs | 1.79 µs | n/a |
 
 Key takeaways:
 
-* **Pure HTML templates are 100-180x faster** than the legacy async generator path. The previous approach created ~9 async generators and 20-30 Promises for even a trivial `<div>Hello</div>` — all resolved synchronously but each requiring a microtask tick.
+* **Pure HTML templates are 40-160x faster** than the legacy async generator path. The previous approach created ~9 async generators and 20-30 Promises for even a trivial `<div>Hello</div>` — all resolved synchronously but each requiring a microtask tick.
 * **`renderToString()` benefits automatically** — no code changes needed. It detects sync trees and takes the fast path.
 * **`renderToStringSync()` adds ~20% more** on top by avoiding even the outer `async` wrapper and its single microtask.
 * **Sync function components** benefit from `renderToStringSync` (1.8x) but not from the auto fast path in `renderToString`, since function components prevent top-level `async: false` detection. The hybrid optimization does kick in for sync subtrees *within* async renders.

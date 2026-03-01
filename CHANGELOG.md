@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.0](https://github.com/voxpelli/async-htm-to-string/compare/v4.0.0...v5.0.0) (2026-03-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* sync fast path + modernize to ESM-only, node:test, tstyche ([#122](https://github.com/voxpelli/async-htm-to-string/issues/122))
+
+### 🧹 Chores
+
+* add DeepWiki badge to README ([06f37e4](https://github.com/voxpelli/async-htm-to-string/commit/06f37e4c9bb78099a32f35264b660f12ea1540cd))
+* sync fast path + modernize to ESM-only, node:test, tstyche ([#122](https://github.com/voxpelli/async-htm-to-string/issues/122)) ([43b3234](https://github.com/voxpelli/async-htm-to-string/commit/43b323454983d3a4ff9414a4be51d4de1f09213a))
+
 ## [4.0.0](https://github.com/voxpelli/async-htm-to-string/compare/v3.0.2...v4.0.0) (2026-01-30)
 
 

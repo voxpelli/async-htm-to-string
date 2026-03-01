@@ -1,20 +1,20 @@
-'use strict';
+/** @type {import('../index.js').HtmlMethodResult} */
+export const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [], async: false });
 
-/** @type {import('..').HtmlMethodResult} */
-const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [] });
-
-/** @type {import('..').HtmlMethodResult} */
-const ELEMENT_ARRAY_CHILD_FIXTURE = Object.freeze({
+/** @type {import('../index.js').HtmlMethodResult} */
+export const ELEMENT_ARRAY_CHILD_FIXTURE = Object.freeze({
   type: 'ul',
   props: {},
   children: [
-    { type: 'li', props: {}, children: ['One'] },
-    { type: 'li', props: {}, children: ['Two'] },
+    { type: 'li', props: {}, children: ['One'], async: false },
+    { type: 'li', props: {}, children: ['Two'], async: false },
   ],
+  async: false,
 });
 
-const ELEMENT_FIXTURE_INVALID_TYPE = Object.freeze({ type: true, props: {}, children: [] });
+export const ELEMENT_FIXTURE_INVALID_TYPE = Object.freeze({ type: true, props: {}, children: [] });
 
+// eslint-disable-next-line func-style
 const PrototypeIncludingClass = function () {
   this.a = 1;
   this.b = 2;
@@ -24,17 +24,10 @@ const PrototypeIncludingClass = function () {
 PrototypeIncludingClass.prototype.b = 3;
 PrototypeIncludingClass.prototype.c = 4;
 
-/** @type {import('..').HtmlMethodResult} */
+/** @type {import('../index.js').HtmlMethodResult} */
 // @ts-ignore
-const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
+export const ELEMENT_FIXTURE_WITH_COMPLEX_PROPS = Object.freeze({
   type: 'div',
   props: new PrototypeIncludingClass(),
   children: [],
 });
-
-module.exports = {
-  ELEMENT_FIXTURE,
-  ELEMENT_ARRAY_CHILD_FIXTURE,
-  ELEMENT_FIXTURE_INVALID_TYPE,
-  ELEMENT_FIXTURE_WITH_COMPLEX_PROPS,
-};

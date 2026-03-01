@@ -18,7 +18,7 @@ npm install async-htm-to-string
 ```
 
 ```javascript
-const { html, renderToString } = require('async-htm-to-string');
+import { html, renderToString } from 'async-htm-to-string';
 
 const customTag = ({ prefix }, children) => html`<div>${prefix}-${children}</div>`;
 const dynamicContent = 'bar';
@@ -60,7 +60,10 @@ const renderableElement = html`<div>${content}</div>`;
 
 ### `rawHtml / rawHtml(rawString)`
 
-If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with the
+If you need to provide pre-escaped raw HTML content, then you can use `rawHtml` as either a template literal or by calling it with a string.
+
+> **Security Warning:** Never pass user-controlled or untrusted content to `rawHtml`.
+> It bypasses HTML escaping and can lead to XSS if used with untrusted input.
 
 ```javascript
 const renderableElement = rawHtml`<div>&amp;${'&quot;'}</div>`;
@@ -82,11 +85,81 @@ The inner method that's `htm` is bound to.
 
 ### `render(renderableElement)`
 
-Takes the output from `html` and returns an async iterator that yields the strings as they are rendered
+Takes the output from `html` and returns an async iterator that yields the strings as they are rendered.
 
 ### `renderToString(renderableElement)`
 
-Same as `render()`, but asyncly returns a single string with the fully rendered result, rather than an async iterator.
+Same as `render()`, but asyncly returns a single string with the fully rendered result, rather than an async iterator. Automatically uses a synchronous fast path for pure-HTML templates (no async components or Promise children), avoiding async generator overhead entirely.
+
+### `renderToStringSync(renderableElement)`
+
+Synchronous version of `renderToString()` that returns a `string` directly instead of a `Promise<string>`. Throws a `TypeError` if the input is a Promise, or an `Error` if an async component is encountered during rendering.
+
+Best suited for templates known to be fully synchronous:
+
+```javascript
+import { html, renderToStringSync } from 'async-htm-to-string';
+
+// Returns string directly, no await needed
+const result = renderToStringSync(html`<div class="fast">Hello</div>`);
+```
+
+## Performance
+
+Templates built entirely from string tags and static content (no async components or Promise children) are automatically detected and rendered via a synchronous fast path. This avoids creating async generators and Promises, providing significant speedups for sync-heavy workloads.
+
+The optimization works at multiple levels:
+
+* **Element creation:** `h()` marks elements with `async: false` when the type is a string and all children are sync primitives or other sync elements
+* **Sync fast path in `renderToString()`:** Elements with `async: false` bypass async generators entirely, using direct string concatenation
+* **Hybrid optimization:** Even in async renders, sync subtrees returned by function components are rendered via the fast path
+* **`isPromise` guards:** Async generators skip `await` on values that are already resolved
+
+### Benchmark results
+
+Measured with [mitata](https://github.com/evanwashere/mitata) on Node.js 22 (Apple M1), with `--expose-gc` and `.gc('inner')` for consistent GC behavior. "Legacy" is the pre-optimization async generator path. See [`benchmark.js`](./benchmark.js) for the full source.
+
+| Template | Legacy | `renderToString` | `renderToStringSync` |
+|---|---|---|---|
+| Simple (`<div>Hello</div>`) | 57 µs | **465 ns** (123x faster) | **360 ns** (158x faster) |
+| Medium (nested HTML, props, lists) | 165 µs | **3.9 µs** (43x faster) | **3.1 µs** (54x faster) |
+| rawHtml child | 7.3 µs | **674 ns** (11x faster) | **568 ns** (13x faster) |
+| Sync function component | 1.42 µs | 1.48 µs (1.0x) | **769 ns** (1.8x faster) |
+| Async function component | 1.45 µs | 1.79 µs | n/a |
+
+Key takeaways:
+
+* **Pure HTML templates are 40-160x faster** than the legacy async generator path. The previous approach created ~9 async generators and 20-30 Promises for even a trivial `<div>Hello</div>` — all resolved synchronously but each requiring a microtask tick.
+* **`renderToString()` benefits automatically** — no code changes needed. It detects sync trees and takes the fast path.
+* **`renderToStringSync()` adds ~20% more** on top by avoiding even the outer `async` wrapper and its single microtask.
+* **Sync function components** benefit from `renderToStringSync` (1.8x) but not from the auto fast path in `renderToString`, since function components prevent top-level `async: false` detection. The hybrid optimization does kick in for sync subtrees *within* async renders.
+* **No regression for async content** — templates with async components or Promise children use the same async generator path as before.
+
+### Why these numbers are so large
+
+The dramatic speedups are consistent with findings across the Node.js ecosystem:
+
+* **Async generator overhead is well-documented.** Each `yield` in an `async function*` allocates a Promise and schedules a microtask. V8's [async function internals](https://v8.dev/blog/fast-async) show that even optimized `await` requires microtask scheduling. [Node.js issue #31979](https://github.com/nodejs/node/issues/31979) documents ~10x slowdowns for `for await...of` vs `for...of` on the same data.
+* **Sync fast paths are an established pattern.** [Cloudflare's streams research](https://blog.cloudflare.com/a-better-web-streams-api/) shows up to 10x speedups from eliminating promises in sync code paths. Preact, Solid.js, and Lit SSR all offer explicit sync rendering modes for the same reason.
+* **The overhead compounds.** A simple `<div>Hello</div>` previously created ~9 async generators, ~20-30 Promises, and scheduled ~20-30 microtask ticks — all to concatenate 3 strings. The sync path does this in a single function call with zero allocations.
+
+Run the benchmark yourself with `npm run benchmark`.
+
+## Security considerations
+
+This library **escapes interpolated values** — text content and attribute values are HTML-escaped (the 6 characters `& < > " ' \``). This protects against XSS when rendering user-provided strings:
+
+```javascript
+const userInput = '<script>alert("xss")</script>';
+// Safe: renders as &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+await renderToString(html`<div>${userInput}</div>`);
+```
+
+However, this library is a **renderer, not a sanitizer**:
+
+* **Tag and attribute names are not restricted.** Tags like `script`, `iframe` etc. and attributes like `onclick` are valid — the library needs to support all tag names and attributes to enable eg. custom elements and future web platform additions.
+* **`rawHtml` bypasses all escaping.** Never pass untrusted input to `rawHtml`.
+* **Only the 6 HTML-dangerous characters are escaped.** Control characters and non-ASCII content (emoji, CJK, accented characters, etc.) are passed through as-is — these characters cannot break HTML structure, so escaping them would corrupt valid content.
 
 ## Helpers
 

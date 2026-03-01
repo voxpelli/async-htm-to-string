@@ -66,7 +66,7 @@
     "benchmark": "node --expose-gc benchmark.js"
   },
   "dependencies": {
-    "@voxpelli/typed-utils": "^3.0.0",
+    "@voxpelli/typed-utils": "^4.0.0",
     "buffered-async-iterable": "^1.0.1",
     "htm": "^3.0.4"
   },

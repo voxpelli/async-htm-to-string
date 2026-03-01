@@ -49,12 +49,36 @@ npx type-coverage --detail --strict --at-least 99 --ignore-files 'test/*'
 - **Sync fast path**: Elements with `async: false` bypass async generators. `renderToString` tries sync first, catches `AsyncFallbackError`, falls back to async.
 - `benchmark.js` — Performance benchmarks (mitata)
 
-## Runtime utilities (@voxpelli/typed-utils)
+## Security model
+
+This library is an HTML **renderer**, not a **sanitizer**. Understanding the trust model prevents misguided changes.
+
+### What it protects against
+- **Interpolated values are escaped**: Text content and attribute values pass through `escapeHtml()` (6 chars: `& < > " ' \``). Both async and sync paths call the same `escapeHtml` function at identical positions.
+- **Structural injection blocked**: `isTagValid` and `isAttributeNameValid` prevent injection via tag/attribute names (no spaces, `<`, `>`, `"` allowed).
+- **Prototype pollution safe**: `Object.hasOwn()` used for `omittedCloseTags` lookup — immune to `__proto__`/`constructor` as tag names.
+
+### What it intentionally allows
+- **Any tag or attribute name**: `script`, `iframe`, `onclick` etc. are valid — the library renders what you ask for.
+- **`rawHtml` bypasses escaping**: This is the documented escape hatch. `skipStringEscape: true` only takes effect when `type` is a function (not a string tag).
+- **Control characters and lone surrogates pass through**: Matches `stringify-entities { escapeOnly: true }` behavior. Documented in `test/escaping.spec.js`.
+- **Number values are unescaped**: JS numbers (including `NaN`, `Infinity`) cannot produce HTML-dangerous characters.
+
+### Code notes
+- `escapeHtml` relies on `ESCAPE_RE` and `ESCAPE_MAP` being perfectly synchronized. A desync throws `TypeError` at runtime.
+- `skipStringEscape` is `@internal` in JSDoc but visible in `BasicRenderableElement` type exports. TypeScript's `@internal` is advisory only.
+- `AsyncFallbackError` catch blocks correctly re-throw non-`AsyncFallbackError` exceptions in both `renderToString` and `renderElement`.
+
+## Runtime utilities (@voxpelli/typed-utils v4)
 
 This project uses `@voxpelli/typed-utils` for type-safe runtime checks:
-- `isType(value, type)` — type-narrowing check (replaces `typeof`)
+- `assertTypeIsNever(value, msg)` — exhaustiveness guard (returns `never`, throws at runtime). Use with `explainVariable` for error messages: `assertTypeIsNever(x, \`Unexpected: ${explainVariable(x)}\`)`
+- `explainVariable(value)` — like `typeof` but returns `'null'`/`'array'` instead of `'object'` for those cases. Use in error messages.
+- `isType(value, type)` — type-narrowing guard (replaces `typeof`)
 - `typesafeIsArray(value)` — `Array.isArray()` typed as `unknown[]` (not `any[]`)
-- `assertTypeIsNever(value, msg)` — exhaustive check (throws at runtime for unhandled cases)
+
+### assertTypeIsNever and jsdoc/require-returns-check
+Since `assertTypeIsNever` returns `never`, eslint-plugin-jsdoc's `require-returns-check` rule thinks functions ending with it lack a return expression. Fix by using `@type` function cast instead of `@param`/`@returns` JSDoc on those functions.
 
 ## Type testing (tstyche)
 

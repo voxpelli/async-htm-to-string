@@ -145,6 +145,22 @@ The dramatic speedups are consistent with findings across the Node.js ecosystem:
 
 Run the benchmark yourself with `npm run benchmark`.
 
+## Security considerations
+
+This library **escapes interpolated values** — text content and attribute values are HTML-escaped (the 6 characters `& < > " ' \``). This protects against XSS when rendering user-provided strings:
+
+```javascript
+const userInput = '<script>alert("xss")</script>';
+// Safe: renders as &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+await renderToString(html`<div>${userInput}</div>`);
+```
+
+However, this library is a **renderer, not a sanitizer**:
+
+* **Tag and attribute names are not restricted.** Tags like `script`, `iframe` etc. and attributes like `onclick` are valid — the library needs to support all tag names and attributes to enable eg. custom elements and future web platform additions.
+* **`rawHtml` bypasses all escaping.** Never pass untrusted input to `rawHtml`.
+* **Only the 6 HTML-dangerous characters are escaped.** Control characters and non-ASCII content (emoji, CJK, accented characters, etc.) are passed through as-is — these characters cannot break HTML structure, so escaping them would corrupt valid content.
+
 ## Helpers
 
 ### `generatorToString(somethingIterable)`

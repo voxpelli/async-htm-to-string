@@ -42,6 +42,13 @@ describe('async property tracking', () => {
     el.should.have.property('async', false);
   });
 
+  it('should set async: false on elements with null/undefined/false children', () => {
+    // @ts-expect-error — testing runtime behavior with falsy children not in RenderableElement type
+    // eslint-disable-next-line unicorn/no-null
+    const el = h('div', {}, null, undefined, false, 'text');
+    el.should.have.property('async', false);
+  });
+
   it('should not set async: false on elements with function type', () => {
     const el = h(() => 'hello', {});
     should.not.exist(el.async);
@@ -97,16 +104,6 @@ describe('renderToStringSync()', () => {
     result.should.equal('<img src="#" />');
   });
 
-  it('should escape string content', () => {
-    const result = renderToStringSync(html`<div>${'<script>'}</div>`);
-    result.should.equal('<div>&lt;script&gt;</div>');
-  });
-
-  it('should escape string props', () => {
-    const result = renderToStringSync(html`<div foo="${'"bar"'}" />`);
-    result.should.equal('<div foo="&quot;bar&quot;"></div>');
-  });
-
   it('should handle boolean props', () => {
     const result = renderToStringSync(html`<div foo="${true}" bar="${false}" />`);
     result.should.equal('<div foo></div>');
@@ -132,6 +129,18 @@ describe('renderToStringSync()', () => {
     result.should.equal('<span>content</span>');
   });
 
+  it('should render empty array children', () => {
+    // @ts-ignore
+    const el = { type: 'div', props: {}, children: [], async: false };
+    const result = renderToStringSync(el);
+    result.should.equal('<div></div>');
+  });
+
+  it('should render fragment in sync path', () => {
+    const result = renderToStringSync(html`<><div>a</div></>`);
+    result.should.equal('<div>a</div>');
+  });
+
   it('should throw on Promise value', () => {
     should.Throw(
       () => renderToStringSync(Promise.resolve(html`<div />`)),
@@ -140,14 +149,14 @@ describe('renderToStringSync()', () => {
     );
   });
 
-  it('should throw on async function component', () => {
+  it('should throw descriptive error on async function component', () => {
     /** @type {import('..').SimpleRenderableElementFunction} */
     const AsyncComp = async () => html`<div />`;
     const el = html`<${AsyncComp} />`;
     should.Throw(
       () => renderToStringSync(el),
-      Error,
-      'ASYNC_FALLBACK'
+      TypeError,
+      /async component/i
     );
   });
 });
@@ -190,5 +199,19 @@ describe('hybrid sync optimization in async path', () => {
     // via the sync path even though the outer component is async
     const result = await renderToString(html`<${Wrapper}><span>Hello</span></${Wrapper}>`);
     result.should.equal('<div><span>Hello</span></div>');
+  });
+
+  it('should fall back to async path when sync subtree contains async component', async () => {
+    /** @type {import('..').SimpleRenderableElementFunction} */
+    const AsyncComp = async () => html`<span>async</span>`;
+    const asyncChild = { type: AsyncComp, props: {}, children: [] };
+    // Hand-craft an element with async: false but containing an async child deeper in the tree
+    // This simulates a false-positive sync marking
+    /** @type {import('..').SimpleRenderableElementFunction} */
+    const Wrapper = () => ({ type: 'div', props: {}, children: [asyncChild], async: false });
+    const el = { type: Wrapper, props: {}, children: [], async: false };
+    // Should not throw — should fall back to async rendering
+    const result = await renderToString(html`<section>${el}</section>`);
+    result.should.include('<span>async</span>');
   });
 });

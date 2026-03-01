@@ -87,8 +87,7 @@
   "dependencies": {
     "@voxpelli/typed-utils": "^3.0.0",
     "buffered-async-iterable": "^1.0.1",
-    "htm": "^3.0.4",
-    "stringify-entities": "^4.0.3"
+    "htm": "^3.0.4"
   },
   "devDependencies": {
     "@skypack/package-check": "^0.2.2",

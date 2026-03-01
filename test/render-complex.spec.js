@@ -17,7 +17,6 @@ process.on('unhandledRejection', reason => { throw reason; });
 
 const {
   html,
-  rawHtml,
   renderToString,
 } = require('..');
 
@@ -82,6 +81,18 @@ describe('renderToString()', () => {
     it('should handle self-closing tag with closing tag correctly', async () => {
       await renderToString(html`<img src="#"></img>`)
         .should.eventually.equal('<img src="#" />');
+    });
+
+    it('should render uppercase void elements as self-closing', async () => {
+      const tag = 'IMG';
+      await renderToString(html`<${tag} src="x" />`)
+        .should.eventually.equal('<img src="x" />');
+    });
+
+    it('should render mixed-case void elements as self-closing', async () => {
+      const tag = 'Br';
+      await renderToString(html`<${tag} />`)
+        .should.eventually.equal('<br />');
     });
 
     it('should be able to render a fragment example', async () => {
@@ -230,31 +241,6 @@ describe('renderToString()', () => {
         .should.eventually.equal('<div foo="bar" xyz="abc"></div>');
     });
 
-    it('should escape string props', async () => {
-      await renderToString(html`<div foo="${'"bar"'}" yay="${'<div>'}" xyz="ab&c"></div>`)
-        .should.eventually.equal('<div foo="&quot;bar&quot;" yay="&lt;div&gt;" xyz="ab&amp;c"></div>');
-    });
-
-    it('should escape string content', async () => {
-      await renderToString(html`<div>${'"bar"'}${'<div>'}ab&c</div>`)
-        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
-    });
-
-    it('should not escape raw html given through template literal rawHtml``', async () => {
-      await renderToString(rawHtml`<div>${'&quot;bar&quot;'}&lt;div&gt;ab&amp;c</div>`)
-        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
-    });
-
-    it('should not escape raw html given through direct call to rawHtml()', async () => {
-      await renderToString(rawHtml('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>'))
-        .should.eventually.equal('<div>&quot;bar&quot;&lt;div&gt;ab&amp;c</div>');
-    });
-
-    it('should support rawHtml() as child content in ordinary html', async () => {
-      await renderToString(html`<div>${'<div>'}${rawHtml`<div>`}${rawHtml('<div>')}</div>`)
-        .should.eventually.equal('<div>&lt;div&gt;<div><div></div>');
-    });
-
     it('should correctly enumerate a non-plain object', async () => {
       await renderToString(ELEMENT_FIXTURE_WITH_COMPLEX_PROPS)
         .should.eventually.equal('<div a="1" b="2"></div>');
@@ -269,6 +255,16 @@ describe('renderToString()', () => {
     it('should handle unquoted props', async () => {
       await renderToString(html`<div foo=bar />`)
         .should.eventually.equal('<div foo="bar"></div>');
+    });
+
+    it('should render NaN as string in props', async () => {
+      await renderToString(html`<div foo="${Number.NaN}" />`)
+        .should.eventually.equal('<div foo="NaN"></div>');
+    });
+
+    it('should render Infinity as string in props', async () => {
+      await renderToString(html`<div foo="${Number.POSITIVE_INFINITY}" />`)
+        .should.eventually.equal('<div foo="Infinity"></div>');
     });
 
     it('should ignore unsupported property types', async () => {

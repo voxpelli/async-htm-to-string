@@ -23,6 +23,10 @@ const StringAsync = async () => {
   return 'Just String';
 };
 
+// eslint-disable-next-line unicorn/no-null
+const NullComp = () => null;
+const UndefComp = () => {};
+
 describe('async support', () => {
   it('should render async function component', async () => {
     /** @type {import('..').SimpleRenderableElementFunction} */
@@ -81,6 +85,21 @@ describe('async support', () => {
 
     await renderToString(html`<div><${AsyncComp} /></div>`)
       .should.eventually.equal('<div>AB</div>');
+  });
+
+  it('should handle promise rejection in children', async () => {
+    await renderToString(html`<div>${Promise.reject(new Error('boom'))}</div>`)
+      .should.be.rejectedWith(Error, 'boom');
+  });
+
+  it('should handle function component returning null', async () => {
+    await renderToString(html`<div><${NullComp} /></div>`)
+      .should.eventually.equal('<div></div>');
+  });
+
+  it('should handle function component returning undefined', async () => {
+    await renderToString(html`<div><${UndefComp} /></div>`)
+      .should.eventually.equal('<div></div>');
   });
 
   it('should throw when skipStringEscape is used with non-string result', async () => {

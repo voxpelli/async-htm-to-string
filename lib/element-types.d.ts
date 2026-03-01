@@ -29,6 +29,7 @@ export interface BasicRenderableElement<Props extends ElementProps> {
   type: string | RenderableElementFunction<Props>;
   props: Props;
   children: RenderableElement[];
+  /** @internal */
   skipStringEscape?: boolean;
   async?: boolean;
 }

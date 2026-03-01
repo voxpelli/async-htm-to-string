@@ -219,6 +219,10 @@ describe('HtmlTemplateValue assignability', () => {
   test('should accept false for conditional rendering pattern (&&)', () => {
     expect<HtmlTemplateValue>().type.toBeAssignableFrom(false as const);
   });
+
+  test('should not accept symbol', () => {
+    expect<HtmlTemplateValue>().type.not.toBeAssignableFrom(Symbol('x'));
+  });
 });
 
 describe('html template composition', () => {

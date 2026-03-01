@@ -113,8 +113,7 @@ describe('html``', () => {
     const element = html`<div />`;
     // eslint-disable-next-line unicorn/no-null
     const result = html`${element}${null}${null}`;
-    assert.ok(Array.isArray(result));
-    assert.equal(/** @type {unknown[]} */ (result).length, 1);
+    assert.deepEqual(result, [element]);
   });
 
   it('should handle top level array content', () => {

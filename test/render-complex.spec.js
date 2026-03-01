@@ -47,6 +47,14 @@ describe('renderToString()', () => {
       assert.equal(result, '<p>text</p>');
     });
 
+    it('should render fragment with Promise resolving to null', async () => {
+      const element = html`<div>content</div>`;
+      // @ts-ignore — Promise<null> is not HtmlTemplateValue, but works at runtime
+      // eslint-disable-next-line unicorn/no-null
+      const result = await renderToString(html`${Promise.resolve(null)}${element}`);
+      assert.equal(result, '<div>content</div>');
+    });
+
     it('should render fragment with Promise resolving to empty string', async () => {
       const element = html`<div>content</div>`;
       const result = await renderToString(html`${Promise.resolve('')}${element}`);

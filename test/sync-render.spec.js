@@ -159,6 +159,11 @@ describe('renderToStringSync()', () => {
     assert.equal(result, '<div>a</div>');
   });
 
+  it('should render empty string as no output', () => {
+    const result = renderToStringSync('');
+    assert.equal(result, '');
+  });
+
   it('should throw on Promise value', () => {
     assert.throws(
       () => renderToStringSync(Promise.resolve(html`<div />`)),

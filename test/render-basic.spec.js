@@ -59,6 +59,6 @@ describe('render() basic', () => {
       total.push(result);
     }
 
-    assert.deepEqual(total, ['<div', '>', '</div>']);
+    assert.deepEqual(total, ['<div>', '</div>']);
   });
 });

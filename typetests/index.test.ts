@@ -3,10 +3,12 @@ import { describe, expect, test } from 'tstyche';
 import {
   html,
   h,
+  rawHtml,
   render,
   renderSync,
   renderToString,
   renderToStringSync,
+  generatorToString,
 } from 'async-htm-to-string';
 
 import type {
@@ -134,5 +136,55 @@ describe('renderToString()', () => {
 describe('renderToStringSync()', () => {
   test('should return string', () => {
     expect(renderToStringSync({ type: 'div', props: {}, children: [] })).type.toBe<string>();
+  });
+
+  test('should not accept no arguments or invalid types', () => {
+    expect(renderToStringSync()).type.toRaiseError();
+    expect(renderToStringSync(false)).type.toRaiseError();
+  });
+});
+
+describe('renderSync()', () => {
+  test('should return string', () => {
+    expect(renderSync({ type: 'div', props: {}, children: [] })).type.toBe<string>();
+  });
+
+  test('should not accept no arguments or invalid types', () => {
+    expect(renderSync()).type.toRaiseError();
+    expect(renderSync(false)).type.toRaiseError();
+  });
+});
+
+describe('rawHtml', () => {
+  test('should return BasicRenderableElement from template tag', () => {
+    expect(rawHtml`<div>raw</div>`).type.toBe<BasicRenderableElement<{}>>();
+  });
+
+  test('should return BasicRenderableElement from string call', () => {
+    expect(rawHtml('<div>raw</div>')).type.toBe<BasicRenderableElement<{}>>();
+  });
+
+  test('should be assignable to HtmlMethodResult', () => {
+    expect<HtmlMethodResult>().type.toBeAssignableFrom(rawHtml`<div>raw</div>`);
+    expect<HtmlMethodResult>().type.toBeAssignableFrom(rawHtml('<div>raw</div>'));
+  });
+});
+
+describe('h()', () => {
+  test('should accept string type', () => {
+    expect(h('div', {})).type.toBe<BasicRenderableElement<{}>>();
+    expect(h('div', {}, 'child')).type.toBe<BasicRenderableElement<{}>>();
+  });
+});
+
+describe('generatorToString()', () => {
+  test('should return Promise<string>', () => {
+    async function * gen (): AsyncIterableIterator<string> { yield 'a'; }
+    expect(generatorToString(gen())).type.toBe<Promise<string>>();
+  });
+
+  test('should accept sync iterables too', () => {
+    function * gen (): IterableIterator<string> { yield 'a'; }
+    expect(generatorToString(gen())).type.toBe<Promise<string>>();
   });
 });

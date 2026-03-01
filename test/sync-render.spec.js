@@ -7,9 +7,24 @@ import {
   h,
   html,
   rawHtml,
+  render,
+  renderSync,
   renderToString,
   renderToStringSync,
+  generatorToString,
 } from '../index.js';
+
+// eslint-disable-next-line unicorn/no-thenable
+const thenable = { then: (/** @type {(v: string) => void} */ resolve) => resolve('thenable result') };
+
+/** @type {import('../index.js').SimpleRenderableElementFunction} */
+const ThenableComp = () => /** @type {any} */ (thenable);
+
+function * syncGen () { yield 'x'; yield 'y'; }
+async function * asyncGen () { yield 'a'; }
+async function * asyncStringGen () { yield 'hello'; yield ' '; yield 'world'; }
+async function * emptyAsyncGen () { /* empty */ }
+function * syncStringGen () { yield 'a'; yield 'b'; }
 
 describe('async property tracking', () => {
   it('should set async: false on elements with string type and no children', () => {
@@ -194,5 +209,125 @@ describe('hybrid sync optimization in async path', () => {
     const el = { type: Wrapper, props: {}, children: [], async: false };
     const result = await renderToString(html`<section>${el}</section>`);
     assert.ok(result.includes('<span>async</span>'), 'should contain async component output');
+  });
+});
+
+describe('thenable handling in sync path', () => {
+  it('should fall back to async when component returns thenable (non-native Promise)', async () => {
+    const result = await renderToString(html`<${ThenableComp} />`);
+    assert.equal(result, 'thenable result');
+  });
+
+  it('should throw TypeError via renderToStringSync when component returns thenable', () => {
+    assert.throws(
+      () => renderToStringSync(html`<${ThenableComp} />`),
+      { name: 'TypeError', message: /async component/i }
+    );
+  });
+});
+
+describe('iterable handling in sync path', () => {
+  it('should render Set children synchronously', () => {
+    const set = new Set(['a', 'b']);
+    // @ts-ignore — testing runtime behavior with Set child
+    const result = renderToStringSync({ type: 'div', props: {}, children: [set], async: false });
+    assert.equal(result, '<div>ab</div>');
+  });
+
+  it('should render generator children synchronously', () => {
+    // @ts-ignore — testing runtime behavior with generator child
+    const result = renderToStringSync({ type: 'div', props: {}, children: [syncGen()], async: false });
+    assert.equal(result, '<div>xy</div>');
+  });
+
+  it('should render Set children via async path too', async () => {
+    const set = new Set(['a', 'b']);
+    const result = await renderToString(html`<div>${set}</div>`);
+    assert.equal(result, '<div>ab</div>');
+  });
+
+  it('should render generator children via async path too', async () => {
+    // @ts-ignore — testing runtime behavior with generator child
+    const result = await renderToString(html`<div>${syncGen()}</div>`);
+    assert.equal(result, '<div>xy</div>');
+  });
+
+  it('should throw on async iterable in sync render', () => {
+    assert.throws(
+      // @ts-ignore — testing runtime behavior with async iterable child
+      () => renderToStringSync({ type: 'div', props: {}, children: [asyncGen()], async: false }),
+      { name: 'TypeError', message: /async component/i }
+    );
+  });
+});
+
+describe('skipStringEscape in sync path', () => {
+  it('should throw when skipStringEscape is used with non-string result in sync path', () => {
+    const element = {
+      type: () => 123,
+      props: {},
+      children: [],
+      skipStringEscape: true,
+    };
+    assert.throws(
+      // @ts-ignore
+      () => renderToStringSync(element),
+      { name: 'TypeError', message: 'skipStringEscape can only be used with string results' }
+    );
+  });
+});
+
+describe('renderSync()', () => {
+  it('should render array input', () => {
+    const result = renderSync([
+      { type: 'div', props: {}, children: ['a'], async: false },
+      { type: 'span', props: {}, children: ['b'], async: false },
+    ]);
+    assert.equal(result, '<div>a</div><span>b</span>');
+  });
+
+  it('should render string input', () => {
+    const result = renderSync({ type: 'div', props: {}, children: ['hello'], async: false });
+    assert.equal(result, '<div>hello</div>');
+  });
+});
+
+describe('render() with Promise input', () => {
+  it('should handle Promise input', async () => {
+    const result = await generatorToString(render(Promise.resolve(html`<div>resolved</div>`)));
+    assert.equal(result, '<div>resolved</div>');
+  });
+});
+
+describe('invalid tag/attribute in sync path', () => {
+  it('should throw on invalid tag name in sync render', () => {
+    assert.throws(
+      () => renderToStringSync({ type: '-bad', props: {}, children: [], async: false }),
+      { message: 'Invalid tag name: -bad' }
+    );
+  });
+
+  it('should throw on invalid attribute name in sync render', () => {
+    assert.throws(
+      () => renderToStringSync({ type: 'div', props: { '-bad': 'val' }, children: [], async: false }),
+      { message: 'Invalid attribute name: -bad' }
+    );
+  });
+});
+
+describe('generatorToString()', () => {
+  it('should concatenate async iterable strings', async () => {
+    const result = await generatorToString(asyncStringGen());
+    assert.equal(result, 'hello world');
+  });
+
+  it('should handle empty async iterable', async () => {
+    const result = await generatorToString(emptyAsyncGen());
+    assert.equal(result, '');
+  });
+
+  it('should handle sync iterable', async () => {
+    const result = await generatorToString(syncStringGen());
+    assert.equal(result, 'ab');
   });
 });

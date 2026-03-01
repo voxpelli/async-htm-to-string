@@ -6,7 +6,9 @@ const {
 
 const {
   render,
+  renderSync,
   renderToString,
+  renderToStringSync,
 } = require('./lib/render');
 
 const {
@@ -19,5 +21,7 @@ module.exports = {
   html,
   rawHtml,
   render,
+  renderSync,
   renderToString,
+  renderToStringSync,
 };

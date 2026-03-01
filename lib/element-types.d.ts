@@ -30,6 +30,7 @@ export interface BasicRenderableElement<Props extends ElementProps> {
   props: Props;
   children: RenderableElement[];
   skipStringEscape?: boolean;
+  async?: boolean;
 }
 
 export interface StringRenderableElement<Props extends ElementProps> extends BasicRenderableElement<Props> {

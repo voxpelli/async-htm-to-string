@@ -1,16 +1,17 @@
 'use strict';
 
 /** @type {import('..').HtmlMethodResult} */
-const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [] });
+const ELEMENT_FIXTURE = Object.freeze({ type: 'div', props: {}, children: [], async: false });
 
 /** @type {import('..').HtmlMethodResult} */
 const ELEMENT_ARRAY_CHILD_FIXTURE = Object.freeze({
   type: 'ul',
   props: {},
   children: [
-    { type: 'li', props: {}, children: ['One'] },
-    { type: 'li', props: {}, children: ['Two'] },
+    { type: 'li', props: {}, children: ['One'], async: false },
+    { type: 'li', props: {}, children: ['Two'], async: false },
   ],
+  async: false,
 });
 
 const ELEMENT_FIXTURE_INVALID_TYPE = Object.freeze({ type: true, props: {}, children: [] });

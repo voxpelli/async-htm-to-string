@@ -32,7 +32,7 @@ describe('html``', () => {
       props: { 'class': 'prop1 prop2', 'data-foo': '123' },
       children: [
         '  ',
-        { type: 'img', props: { src: '#' }, children: [] },
+        { type: 'img', props: { src: '#' }, children: [], async: false },
         ' ',
         {
           type: bar,
@@ -43,6 +43,7 @@ describe('html``', () => {
               type: 'woot',
               props: {},
               children: ['YEA&H!', '<div>w0000000000t</div>'],
+              async: false,
             },
           ],
         },
@@ -77,8 +78,8 @@ describe('html``', () => {
   it('should handle multi root example', () => {
     /** @type {import('..').HtmlMethodResult} */
     const fixture = [
-      { type: 'div', props: {}, children: [] },
-      { type: 'div', props: {}, children: [] },
+      { type: 'div', props: {}, children: [], async: false },
+      { type: 'div', props: {}, children: [], async: false },
     ];
 
     html`<div /><div />`.should.deep.equal(fixture);
@@ -93,7 +94,7 @@ describe('html``', () => {
   it('should handle combined root example', () => {
     /** @type {import('..').HtmlMethodResult} */
     const fixture = [
-      { type: 'div', props: {}, children: [] },
+      { type: 'div', props: {}, children: [], async: false },
       'foo',
     ];
     html`<div />foo`.should.deep.equal(fixture);
@@ -120,14 +121,14 @@ describe('html``', () => {
   it('should handle top level array content', () => {
     /** @type {import('..').HtmlMethodResult} */
     const fixture1 = [
-      { type: 'div', props: {}, children: [] },
-      { type: 'div', props: {}, children: [] },
+      { type: 'div', props: {}, children: [], async: false },
+      { type: 'div', props: {}, children: [], async: false },
     ];
 
     /** @type {import('..').HtmlMethodResult} */
     const fixture2 = [
       ...fixture1,
-      { type: 'span', props: {}, children: [] },
+      { type: 'span', props: {}, children: [], async: false },
     ];
 
     html`${fixture1}<span />`.should.deep.equal(fixture2);

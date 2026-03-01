@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.2](https://github.com/voxpelli/async-htm-to-string/compare/v5.0.1...v5.0.2) (2026-03-01)
+
+
+### 🩹 Fixes
+
+* accept null/empty-string in fragments and harden test coverage ([#130](https://github.com/voxpelli/async-htm-to-string/issues/130)) ([17f8afb](https://github.com/voxpelli/async-htm-to-string/commit/17f8afb53f6270cfd5297e93c59d3445ae6bde4a))
+
 ## [5.0.1](https://github.com/voxpelli/async-htm-to-string/compare/v5.0.0...v5.0.1) (2026-03-01)
 
 

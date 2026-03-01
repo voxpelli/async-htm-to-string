@@ -82,11 +82,57 @@ The inner method that's `htm` is bound to.
 
 ### `render(renderableElement)`
 
-Takes the output from `html` and returns an async iterator that yields the strings as they are rendered
+Takes the output from `html` and returns an async iterator that yields the strings as they are rendered.
 
 ### `renderToString(renderableElement)`
 
-Same as `render()`, but asyncly returns a single string with the fully rendered result, rather than an async iterator.
+Same as `render()`, but asyncly returns a single string with the fully rendered result, rather than an async iterator. Automatically uses a synchronous fast path for pure-HTML templates (no async components or Promise children), avoiding async generator overhead entirely.
+
+### `renderToStringSync(renderableElement)`
+
+Synchronous version of `renderToString()` that returns a `string` directly instead of a `Promise<string>`. Throws a `TypeError` if the input is a Promise, or an `Error` if an async component is encountered during rendering.
+
+Best suited for templates known to be fully synchronous:
+
+```javascript
+const { html, renderToStringSync } = require('async-htm-to-string');
+
+// Returns string directly, no await needed
+const result = renderToStringSync(html`<div class="fast">Hello</div>`);
+```
+
+## Performance
+
+Templates built entirely from string tags and static content (no async components or Promise children) are automatically detected and rendered via a synchronous fast path. This avoids creating async generators and Promises, providing significant speedups for sync-heavy workloads.
+
+The optimization works at multiple levels:
+
+* **Element creation:** `h()` marks elements with `async: false` when the type is a string and all children are sync primitives or other sync elements
+* **Sync fast path in `renderToString()`:** Elements with `async: false` bypass async generators entirely, using direct string concatenation
+* **Hybrid optimization:** Even in async renders, sync subtrees returned by function components are rendered via the fast path
+* **`isPromise` guards:** Async generators skip `await` on values that are already resolved
+
+### Benchmark results
+
+Measured with [mitata](https://github.com/evanwashere/mitata) on Node.js 22 (Apple M1), with `--expose-gc` and `.gc('inner')` for consistent GC behavior. "Legacy" is the pre-optimization async generator path. See [`benchmark.mjs`](./benchmark.mjs) for the full source.
+
+| Template | Legacy | `renderToString` | `renderToStringSync` |
+|---|---|---|---|
+| Simple (`<div>Hello</div>`) | 91 µs | **625 ns** (146x faster) | **500 ns** (183x faster) |
+| Medium (nested HTML, props, lists) | 399 µs | **3.7 µs** (109x faster) | **3.4 µs** (118x faster) |
+| rawHtml child | 19 µs | **938 ns** (20x faster) | **790 ns** (24x faster) |
+| Sync function component | 1.73 µs | 1.67 µs (1.04x) | **974 ns** (1.8x faster) |
+| Async function component | 1.66 µs | 1.92 µs | n/a |
+
+Key takeaways:
+
+* **Pure HTML templates are 100-180x faster** than the legacy async generator path. The previous approach created ~9 async generators and 20-30 Promises for even a trivial `<div>Hello</div>` — all resolved synchronously but each requiring a microtask tick.
+* **`renderToString()` benefits automatically** — no code changes needed. It detects sync trees and takes the fast path.
+* **`renderToStringSync()` adds ~20% more** on top by avoiding even the outer `async` wrapper and its single microtask.
+* **Sync function components** benefit from `renderToStringSync` (1.8x) but not from the auto fast path in `renderToString`, since function components prevent top-level `async: false` detection. The hybrid optimization does kick in for sync subtrees *within* async renders.
+* **No regression for async content** — templates with async components or Promise children use the same async generator path as before.
+
+Run the benchmark yourself with `npm run benchmark`.
 
 ## Helpers
 

@@ -79,6 +79,7 @@
     "test:mocha": "c8 --reporter=lcov --reporter text mocha 'test/**/*.spec.js'",
     "test-ci": "run-s test:*",
     "test": "run-s check test:*",
+    "benchmark": "node --expose-gc benchmark.mjs",
     "watch:build": "nodemon -x \"run-s build\"",
     "watch:tsd": "nodemon -e ts -x \"npx tsd\"",
     "watch": "run-p watch:*"
@@ -107,6 +108,7 @@
     "installed-check": "^9.3.0",
     "knip": "^5.82.1",
     "linemod": "^2.0.1",
+    "mitata": "^1.0.34",
     "mocha": "^11.7.5",
     "nodemon": "^3.1.11",
     "npm-run-all2": "^8.0.4",

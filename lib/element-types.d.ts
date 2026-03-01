@@ -18,6 +18,15 @@ export type RenderableElement = string | number | BasicRenderableElement<any>;
 
 export type HtmlMethodResult = MaybePromised<MaybeArray<MaybePromised<BasicRenderableElement<ElementProps> | string>>>;
 
+export type HtmlTemplateValue =
+  | ElementPropsValue
+  | ElementProps
+  | RenderableElementFunction<any>
+  | RenderableElement
+  | RenderableElement[]
+  | HtmlMethodResult
+  | Promise<HtmlMethodResult>;
+
 export type RenderableElementFunction<Props extends ElementProps> = (props: Props, children: RenderableElement[]) => HtmlMethodResult;
 export type SimpleRenderableElementFunction = RenderableElementFunction<ElementProps>;
 

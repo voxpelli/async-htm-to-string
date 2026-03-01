@@ -41,13 +41,11 @@ describe('async support', () => {
 
   it('should render direct Promise child', async () => {
     const promise = Promise.resolve('Promise Content');
-    // @ts-ignore — testing runtime Promise child handling
     assert.equal(await renderToString(html`${promise}`), 'Promise Content');
   });
 
   it('should render Promise child returning element', async () => {
     const promise = Promise.resolve(html`<span>Delayed</span>`);
-    // @ts-ignore — testing runtime Promise child handling
     assert.equal(await renderToString(html`<div>${promise}</div>`), '<div><span>Delayed</span></div>');
   });
 
@@ -74,7 +72,6 @@ describe('async support', () => {
   });
 
   it('should handle promise rejection in children', async () => {
-    // @ts-ignore — testing runtime Promise rejection handling
     await assert.rejects(renderToString(html`<div>${Promise.reject(new Error('boom'))}</div>`), { name: 'Error', message: 'boom' });
   });
 

@@ -215,6 +215,10 @@ describe('HtmlTemplateValue assignability', () => {
   test('should accept null for conditional rendering pattern', () => {
     expect<HtmlTemplateValue>().type.toBeAssignableFrom(null);
   });
+
+  test('should accept false for conditional rendering pattern (&&)', () => {
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(false as const);
+  });
 });
 
 describe('html template composition', () => {
@@ -243,6 +247,12 @@ describe('html template composition', () => {
     const show = true;
     const content: HtmlMethodResult = html`<span>visible</span>`;
     expect(html`<div>${show ? content : null}</div>`).type.toBe<HtmlMethodResult>();
+  });
+
+  test('should accept false for conditional rendering (&&)', () => {
+    const show = false;
+    const content: HtmlMethodResult = html`<span>visible</span>`;
+    expect(html`<div>${show && content}</div>`).type.toBe<HtmlMethodResult>();
   });
 });
 

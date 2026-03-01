@@ -13,6 +13,7 @@ import {
 
 import type {
   ElementProps,
+  ElementPropsValue,
   HtmlMethodResult,
   HtmlTemplateValue,
   RenderableElement,
@@ -232,6 +233,27 @@ describe('html template composition', () => {
     const component: RenderableElementFunction<{}> = (_props, children) => html`<span>${children}</span>`;
     const result: HtmlMethodResult = html`<${component}>child<//>`;
     expect(html`<div>${result}</div>`).type.toBe<HtmlMethodResult>();
+  });
+});
+
+describe('ElementPropsValue — Set and Map covariance', () => {
+  test('Set<string> is assignable', () => {
+    expect<ElementPropsValue>().type.toBeAssignableFrom(new Set<string>());
+  });
+  test('Set<number> is assignable', () => {
+    expect<ElementPropsValue>().type.toBeAssignableFrom(new Set<number>());
+  });
+  test('Map<string, string> is assignable', () => {
+    expect<ElementPropsValue>().type.toBeAssignableFrom(new Map<string, string>());
+  });
+  test('Map<string, number> is assignable', () => {
+    expect<ElementPropsValue>().type.toBeAssignableFrom(new Map<string, number>());
+  });
+  test('ElementProps accepts Set<string> prop value', () => {
+    expect<ElementProps>().type.toBeAssignableFrom({ classes: new Set<string>() });
+  });
+  test('ElementProps accepts Map<string, string> prop value', () => {
+    expect<ElementProps>().type.toBeAssignableFrom({ data: new Map<string, string>() });
   });
 });
 

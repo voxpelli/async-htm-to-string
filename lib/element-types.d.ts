@@ -7,8 +7,8 @@ export type ElementPropsValue =
   number |
   unknown[] |
   Record<string, unknown> |
-  Set<unknown> |
-  Map<unknown, unknown>;
+  Set<any> |
+  Map<any, any>;
 
 export type ElementProps = {
   [key: string]: ElementPropsValue;

@@ -71,13 +71,13 @@ describe('async property tracking', () => {
   it('should set async: false on nested pure-string elements via html', () => {
     const result = html`<div><span>text</span></div>`;
     result.should.have.property('async', false);
-    result.children[0].should.have.property('async', false);
+    /** @type {any} */ (result).children[0].should.have.property('async', false);
   });
 
   it('should not set async: false when function component is present', () => {
     const Comp = () => html`<span />`;
     const result = html`<div><${Comp} /></div>`;
-    should.not.exist(result.async);
+    should.not.exist(/** @type {any} */ (result).async);
   });
 });
 

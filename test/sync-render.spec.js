@@ -1,3 +1,4 @@
+/* eslint-disable n/no-sync */
 /// <reference types="node" />
 /// <reference types="mocha" />
 /// <reference types="chai" />
@@ -42,8 +43,7 @@ describe('async property tracking', () => {
   });
 
   it('should not set async: false on elements with function type', () => {
-    const fn = () => 'hello';
-    const el = h(fn, {});
+    const el = h(() => 'hello', {});
     should.not.exist(el.async);
   });
 

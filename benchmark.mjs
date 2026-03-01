@@ -1,5 +1,5 @@
-import { bench, boxplot, group, run, summary } from 'mitata';
-import { do_not_optimize } from 'mitata';
+/* eslint-disable camelcase, n/no-sync */
+import { bench, boxplot, do_not_optimize, group, run, summary } from 'mitata';
 
 import { html, rawHtml, render, renderToString, renderToStringSync } from './index.mjs';
 import { generatorToString } from './lib/utils.js';

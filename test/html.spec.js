@@ -109,6 +109,13 @@ describe('html``', () => {
 
   it('should handle 0 root example', () => { assert.equal(html`${0}`, '0'); });
 
+  it('should filter empty strings from multi-root arrays', () => {
+    const element = html`<div />`;
+    // eslint-disable-next-line unicorn/no-null
+    const result = html`${element}${null}${null}`;
+    assert.deepEqual(result, [element]);
+  });
+
   it('should handle top level array content', () => {
     /** @type {import('../index.js').HtmlMethodResult} */
     const fixture1 = [

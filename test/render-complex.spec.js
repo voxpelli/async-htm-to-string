@@ -28,6 +28,39 @@ describe('renderToString()', () => {
       );
     });
 
+    it('should render fragment with null interpolations', async () => {
+      const element = html`<div>content</div>`;
+      // eslint-disable-next-line unicorn/no-null
+      const result = await renderToString(html`${element}${null}${null}`);
+      assert.equal(result, '<div>content</div>');
+    });
+
+    it('should render fragment with false interpolations', async () => {
+      const element = html`<span>hi</span>`;
+      const result = await renderToString(html`${element}${false}`);
+      assert.equal(result, '<span>hi</span>');
+    });
+
+    it('should render fragment with undefined interpolations', async () => {
+      const element = html`<p>text</p>`;
+      const result = await renderToString(html`${element}${undefined}`);
+      assert.equal(result, '<p>text</p>');
+    });
+
+    it('should render fragment with Promise resolving to null', async () => {
+      const element = html`<div>content</div>`;
+      // @ts-ignore — Promise<null> is not HtmlTemplateValue, but works at runtime
+      // eslint-disable-next-line unicorn/no-null
+      const result = await renderToString(html`${Promise.resolve(null)}${element}`);
+      assert.equal(result, '<div>content</div>');
+    });
+
+    it('should render fragment with Promise resolving to empty string', async () => {
+      const element = html`<div>content</div>`;
+      const result = await renderToString(html`${Promise.resolve('')}${element}`);
+      assert.equal(result, '<div>content</div>');
+    });
+
     it('should handle multiple roots', async () => {
       assert.equal(await renderToString(html`<div /><div />`), '<div></div><div></div>');
     });

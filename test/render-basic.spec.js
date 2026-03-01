@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { render } from '../lib/render.js';
 
+import { generatorToString } from '../lib/utils.js';
 import { ELEMENT_FIXTURE } from './fixtures.js';
 
 describe('render() basic', () => {
@@ -19,15 +20,13 @@ describe('render() basic', () => {
       // @ts-ignore
       // eslint-disable-next-line no-unused-vars, no-empty, unicorn/no-null
       for await (const _foo of render(null)) {}
-    }, { name: 'TypeError', message: 'Expected a non-falsy argument, got: null' });
+    }, { message: 'Expected a renderable value, got: null' });
   });
 
-  it('should throw on empty string argument', async () => {
-    await assert.rejects(async () => {
-      // @ts-ignore
-      // eslint-disable-next-line no-unused-vars, no-empty
-      for await (const _foo of render('')) {}
-    }, { name: 'TypeError', message: 'Expected a non-falsy argument, got: ' });
+  it('should render empty string as no output', async () => {
+    // @ts-ignore
+    const result = await generatorToString(render(''));
+    assert.equal(result, '');
   });
 
   it('should throw on unsupported argument', async () => {
@@ -35,7 +34,7 @@ describe('render() basic', () => {
       // @ts-ignore
       // eslint-disable-next-line no-unused-vars, no-empty
       for await (const _foo of render(true)) {}
-    }, { name: 'TypeError', message: 'Expected a string or an object, got: boolean' });
+    }, { message: 'Expected a renderable value, got: boolean' });
   });
 
   it('should return an async iterator', async () => {

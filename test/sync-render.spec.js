@@ -141,9 +141,27 @@ describe('renderToStringSync()', () => {
     assert.equal(result, '<div></div>');
   });
 
+  it('should render fragment with null interpolations', () => {
+    const element = html`<div>content</div>`;
+    // eslint-disable-next-line unicorn/no-null
+    const result = renderToStringSync(html`${element}${null}${null}`);
+    assert.equal(result, '<div>content</div>');
+  });
+
+  it('should render fragment with false interpolations', () => {
+    const element = html`<span>a</span>`;
+    const result = renderToStringSync(html`${element}${false}`);
+    assert.equal(result, '<span>a</span>');
+  });
+
   it('should render fragment in sync path', () => {
     const result = renderToStringSync(html`<><div>a</div></>`);
     assert.equal(result, '<div>a</div>');
+  });
+
+  it('should render empty string as no output', () => {
+    const result = renderToStringSync('');
+    assert.equal(result, '');
   });
 
   it('should throw on Promise value', () => {

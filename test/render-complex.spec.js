@@ -169,7 +169,6 @@ describe('renderToString()', () => {
 
     it('should handle output as input', async () => {
       const foo = html`<foo />`;
-      // @ts-ignore — HtmlMethodResult includes Promise in union, but runtime value is sync here
       assert.equal(await renderToString(html`<div>${foo}</div>`), '<div><foo></foo></div>');
     });
   });

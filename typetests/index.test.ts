@@ -14,6 +14,7 @@ import {
 import type {
   ElementProps,
   HtmlMethodResult,
+  HtmlTemplateValue,
   RenderableElement,
   RenderableElementFunction,
   BasicRenderableElement,
@@ -174,6 +175,63 @@ describe('h()', () => {
   test('should accept string type', () => {
     expect(h('div', {})).type.toBe<BasicRenderableElement<{}>>();
     expect(h('div', {}, 'child')).type.toBe<BasicRenderableElement<{}>>();
+  });
+});
+
+describe('HtmlTemplateValue assignability', () => {
+  test('should accept HtmlMethodResult', () => {
+    // THE REGRESSION TEST — nesting html`` inside html`` is the core use case
+    const result: HtmlMethodResult = html`<span>child</span>`;
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(result);
+  });
+
+  test('should accept Promise<HtmlMethodResult>', () => {
+    const p: Promise<HtmlMethodResult> = Promise.resolve(html`<span />`);
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(p);
+  });
+
+  test('should accept Promise<string>', () => {
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(Promise.resolve('foo'));
+  });
+
+  test('should accept Promise<BasicRenderableElement>', () => {
+    const p: Promise<BasicRenderableElement<{}>> = Promise.resolve({ type: 'div' as const, props: {}, children: [] });
+    expect<HtmlTemplateValue>().type.toBeAssignableFrom(p);
+  });
+
+  test('should not accept Promise<number>', () => {
+    expect<HtmlTemplateValue>().type.not.toBeAssignableFrom(Promise.resolve(42) as Promise<number>);
+  });
+
+  test('should not accept Promise<boolean>', () => {
+    expect<HtmlTemplateValue>().type.not.toBeAssignableFrom(Promise.resolve(true) as Promise<boolean>);
+  });
+
+  test('should not accept Promise<symbol>', () => {
+    expect<HtmlTemplateValue>().type.not.toBeAssignableFrom(Promise.resolve(Symbol('x')) as Promise<symbol>);
+  });
+});
+
+describe('html template composition', () => {
+  test('should accept nested html`` result as interpolation', () => {
+    // Reproduction from consumer report — this is the fundamental composition pattern
+    const badge: HtmlMethodResult = html`<span class="badge">new</span>`;
+    expect(html`<div>${badge}</div>`).type.toBe<HtmlMethodResult>();
+  });
+
+  test('should accept Promise<HtmlMethodResult> as interpolation', () => {
+    const asyncContent: Promise<HtmlMethodResult> = Promise.resolve(html`<span>async</span>`);
+    expect(html`<div>${asyncContent}</div>`).type.toBe<HtmlMethodResult>();
+  });
+
+  test('should accept rawHtml result as interpolation', () => {
+    expect(html`<div>${rawHtml`<b>raw</b>`}</div>`).type.toBe<HtmlMethodResult>();
+  });
+
+  test('should accept component function result as interpolation', () => {
+    const component: RenderableElementFunction<{}> = (_props, children) => html`<span>${children}</span>`;
+    const result: HtmlMethodResult = html`<${component}>child<//>`;
+    expect(html`<div>${result}</div>`).type.toBe<HtmlMethodResult>();
   });
 });
 

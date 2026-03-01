@@ -138,7 +138,7 @@ describe('html``', () => {
   });
 
   it('should throw on promise resolving to array nested', async () => {
-    // @ts-ignore — html returns a Promise at runtime when given async content
+    // @ts-ignore — html returns HtmlMethodResult (includes string), but assert.rejects needs Promise
     await assert.rejects(html`${Promise.resolve(['a', 'b'])}`, { name: 'TypeError', message: 'Unexpected nested array value found' });
   });
 

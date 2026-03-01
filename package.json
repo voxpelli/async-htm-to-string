@@ -60,7 +60,7 @@
     "prepare": "husky",
     "prepublishOnly": "run-s build",
     "test:tstyche": "run-s build && tstyche --target \"$(jq -r '.engines.typescript' package.json)\" --reporters dot,summary && run-s clean",
-    "test:node": "c8 --reporter=lcov --reporter text --skip-full --check-coverage --lines 95 --branches 85 node --test --test-reporter dot 'test/**/*.spec.js'",
+    "test:node": "c8 --reporter=lcov --reporter text --skip-full --check-coverage --lines 95 --branches 85 node --test --test-reporter dot test/*.spec.js",
     "test-ci": "run-s test:*",
     "test": "run-s check test:*",
     "benchmark": "node --expose-gc benchmark.js"

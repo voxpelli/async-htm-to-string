@@ -81,7 +81,7 @@
     "knip": "^5.82.1",
     "mitata": "^1.0.34",
     "npm-run-all2": "^8.0.4",
-    "tstyche": "^6.2.0",
+    "tstyche": "^7.2.1",
     "type-coverage": "^2.29.7",
     "typescript": "~5.9.3",
     "validate-conventional-commit": "^1.0.4"
